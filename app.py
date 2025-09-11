@@ -1,10 +1,20 @@
-from flask import Flask
+from flask import Flask, Response
+import requests
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "Hello, World!"
+# @app.route("/")
+# def hello():
+#     return "Hello, World!"
+
+LM_BASE = "http://127.0.0.1:1234/v1"
+
+@app.get("/api/models")
+def api_models():
+    r = requests.get(f"{LM_BASE}/models", timeout=10)
+    return Response(r.content,
+                    status=r.status_code,
+                    content_type=r.headers.get("Content-Type", "application/json"))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+    app.run(port=5000)
