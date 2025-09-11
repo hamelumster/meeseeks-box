@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, jsonify
 import requests
 
 app = Flask(__name__)
@@ -15,6 +15,15 @@ def api_models():
     return Response(r.content,
                     status=r.status_code,
                     content_type=r.headers.get("Content-Type", "application/json"))
+
+@app.get("/api/health")
+def api_health():
+    try:
+        r = requests.get(f"{LM_BASE}/models", timeout=5)
+        return jsonify({"ok": r.status_code == 200})
+    except Exception:
+        return jsonify({"ok": False}), 503
+
 
 if __name__ == "__main__":
     app.run(port=5000)
