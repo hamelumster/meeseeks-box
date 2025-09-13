@@ -28,7 +28,6 @@ def _clean_content_from_response(obj: dict) -> str:
     content = re.sub(r"\n{3,}", "\n\n", content)
     return content
 
-
 @app.get("/api/models")
 def api_models():
     r = requests.get(f"{LM_BASE}/models", timeout=10)
@@ -189,7 +188,6 @@ def api_ask():
     resp.headers["Cache-Control"] = "no-cache"
     resp.headers["X-Accel-Buffering"] = "no"
     return resp
-
 
 
 if __name__ == "__main__":
