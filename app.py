@@ -1,6 +1,5 @@
 from flask import Flask, Response, jsonify, request, stream_with_context
 import requests
-import json, re
 
 from config import SYSTEM_PROMPT
 from lm_client import detect_first_responsive_model
