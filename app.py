@@ -1,4 +1,4 @@
-from flask import Flask, Response, jsonify, request, stream_with_context
+from flask import Flask, Response, jsonify, request, stream_with_context, send_from_directory
 import requests
 
 from config import SYSTEM_PROMPT
@@ -6,6 +6,10 @@ from lm_client import detect_first_responsive_model
 from utils import _clean_content_from_response, LM_BASE
 
 app = Flask(__name__)
+
+@app.get("/")
+def index():
+    return send_from_directory("static", "index.html")
 
 @app.get("/api/models")
 def api_models():
