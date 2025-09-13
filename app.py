@@ -3,12 +3,36 @@ import requests
 import json, re
 
 from config import SYSTEM_PROMPT
-from llm_client import detect_first_responsive_model
-from utils import _clean_content_from_response
+from lm_client import detect_first_responsive_model
+from utils import _clean_content_from_response, LM_BASE
 
 app = Flask(__name__)
 
-LM_BASE = "http://127.0.0.1:1234/v1"
+@app.get("/api/models")
+def api_models():
+    r = requests.get(f"{LM_BASE}/models", timeout=10)
+    return Response(r.content,
+                    status=r.status_code,
+                    content_type=r.headers.get("Content-Type", "application/json"))
+
+@app.get("/api/health")
+def api_health():
+    try:
+        r = requests.get(f"{LM_BASE}/models", timeout=5)
+        return jsonify({"ok": r.status_code == 200})
+    except Exception:
+        return jsonify({"ok": False}), 503
+
+@app.get("/api/active_model")
+def api_active_model():
+    """Эндпоинт, который ищет «рабочую» модель и сообщает её id."""
+    mid = detect_first_responsive_model()
+    if not mid:
+        return jsonify({
+            "error": "no_responsive_model",
+            "message": "Не найдено ни одной модели, которая отвечает на /chat/completions. Проверьте, что LM Studio Server запущен и загружена чат-модель."
+        }), 503
+    return jsonify({"model": mid})
 
 @app.post("/api/ask")
 def api_ask():
