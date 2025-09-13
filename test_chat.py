@@ -6,7 +6,9 @@ MODEL = "qwen/qwen3-8b"
 PROMPT = "сколько букв r в слове Raspberry?"
 
 def strip_think(text: str) -> str:
-    # удаляем <think>...</think> и всё, что внутри, возвращаем только текст самого ответа 
+    """удаляем <think>...</think> и всё, что внутри,
+    возвращаем только текст самого ответа
+    """
     return re.sub(r"(?is)<think>.*?</think>\s*", "", text)
 
 payload = {
