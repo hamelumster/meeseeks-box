@@ -140,11 +140,16 @@ def api_ask():
         return jsonify({"error": "upstream_error", "message": str(e)}), 502
 
     if not stream:
-        return Response(
-            upstream.content,
-            status=upstream.status_code,
-            content_type=upstream.headers.get("Content-Type", "application/json"),
-        )
+        try:
+            obj = upstream.json()
+            cleaned = _clean_content_from_response(obj)
+            return jsonify({"content": cleaned}), upstream.status_code
+        except Exception:
+            return Response(
+                upstream.content,
+                status=upstream.status_code,
+                content_type=upstream.headers.get("Content-Type", "application/json"),
+            )
 
     # stream=true — прозрачная проксировка SSE (клиент фильтрует <think>)
     if upstream.status_code != 200:
