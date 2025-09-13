@@ -1,29 +1,15 @@
-# test_chat.py
-import requests, json, re
+import requests, re, json
 
-URL = "http://127.0.0.1:5000/api/chat"
-MODEL = "qwen/qwen3-8b"
+URL = "http://127.0.0.1:5000/api/ask"
 PROMPT = "сколько букв r в слове Raspberry?"
 
-def strip_think(text: str) -> str:
-    """удаляем <think>...</think> и всё, что внутри,
-    возвращаем только текст самого ответа
-    """
-    return re.sub(r"(?is)<think>.*?</think>\s*", "", text)
+THINK_RE = re.compile(r"(?is)<think>.*?</think>\s*")
 
-payload = {
-    "model": MODEL,
-    "messages": [{"role": "user", "content": PROMPT}],
-    "stream": False
-}
-
-r = requests.post(URL, json=payload, timeout=500)
+r = requests.post(URL, json={"prompt": PROMPT, "stream": False}, timeout=60)
 print("HTTP", r.status_code)
-
 try:
     data = r.json()
     content = data["choices"][0]["message"]["content"]
-    print("\nAssistant:", strip_think(content))
+    print("Assistant:", THINK_RE.sub("", content))
 except Exception:
-    # если вдруг не JSON — покажем «как есть»
     print(r.text)
