@@ -94,7 +94,7 @@ def api_ask():
 
     stream = bool(body.get("stream", False))
     temperature = body.get("temperature", 0.7)
-    max_tokens = body.get("max_tokens", 512)
+    max_tokens = body.get("max_tokens", 2048)
 
     payload = {
         "model": model,
