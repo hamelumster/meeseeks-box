@@ -121,7 +121,7 @@ def api_ask():
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": "Ты — дружелюбный ассистент. Не показывай рассуждения и теги <think>."},
+            {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
         ],
         "temperature": temperature,
