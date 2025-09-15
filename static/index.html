@@ -1,131 +1,160 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Веб-персонаж + LM Studio</title>
+  <meta charset="utf-8" />
+  <title>Коробка с мисиксами</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <style>
+    .fade-in  { animation: fade-in  .25s ease forwards; }
+    .fade-out { animation: fade-out .25s ease forwards; }
+    @keyframes fade-in  { from{opacity:0; transform:scale(.97)} to{opacity:1; transform:scale(1)} }
+    @keyframes fade-out { from{opacity:1; transform:scale(1)}  to{opacity:0; transform:scale(.97)} }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <div class="max-w-2xl mx-auto p-4 sm:p-6">
-    <h1 class="text-2xl font-bold mb-4">Ассистент</h1>
+<body class="bg-gray-50 min-h-screen grid place-items-center">
+  <div class="w-full max-w-2xl p-6">
+    <!-- Шаг 1: Коробка по центру -->
+    <button id="boxBtn"
+      class="w-full aspect-video rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow">
+      <div id="boxLottie" class="w-48 h-48"></div>
+      <div class="text-sm text-gray-500 mt-2">Нажми, чтобы начать</div>
+    </button>
 
-    <!-- Карточка персонажа -->
-    <div id="characterCard" class="rounded-2xl bg-white shadow p-4 flex items-center gap-4 transition-opacity">
-      <div id="lottieContainer" class="w-24 h-24"></div>
-      <div class="flex-1">
-        <div id="charText" class="text-sm text-gray-600">
-          Привет! Задай вопрос — я отвечу и исчезну 🙂
-        </div>
+    <!-- Шаг 2: Персонаж + ввод (скрыто до клика) -->
+    <section id="chatStage" class="hidden mt-6 space-y-4">
+      <div class="rounded-3xl bg-white shadow p-5 flex items-center gap-4">
+        <div id="charLottie" class="w-28 h-28"></div>
+        <div class="text-sm text-gray-600" id="charHint">Привет! Задай вопрос 🙂</div>
       </div>
-    </div>
 
-    <!-- Форма -->
-    <form id="askForm" class="mt-4 flex gap-2">
-      <input id="promptInput" type="text" placeholder="Сколько чудес света в мире?"
-             class="flex-1 rounded-xl border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-             required />
-      <button type="submit"
-              class="rounded-xl bg-blue-600 text-white px-5 py-3 hover:bg-blue-700 disabled:opacity-60">
-        Отправить
-      </button>
-    </form>
+      <form id="askForm" class="flex gap-2">
+        <input id="promptInput" type="text" placeholder="Сколько чудес света в мире?"
+               class="flex-1 rounded-2xl border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required />
+        <button class="rounded-2xl bg-blue-600 text-white px-5 py-3 hover:bg-blue-700 disabled:opacity-50">
+          Отправить
+        </button>
+      </form>
 
-    <!-- Статус / ошибки -->
-    <div id="status" class="mt-3 text-sm text-gray-500"></div>
+      <div id="status" class="text-sm text-gray-500"></div>
 
-    <!-- Ответ -->
-    <div id="answerCard" class="hidden mt-6 rounded-2xl bg-white shadow p-5 prose prose-sm max-w-none"></div>
+      <article id="answerCard"
+        class="hidden rounded-3xl bg-white shadow p-5 prose prose-sm max-w-none"></article>
+    </section>
   </div>
 
-  <script>
-    // Lottie
-    const lottieContainer = document.getElementById('lottieContainer');
-    const characterCard   = document.getElementById('characterCard');
-    const charText        = document.getElementById('charText');
-    const answerCard      = document.getElementById('answerCard');
-    const statusEl        = document.getElementById('status');
-    const askForm         = document.getElementById('askForm');
-    const promptInput     = document.getElementById('promptInput');
+<script>
+  // ====== Lottie setup ======
+  const boxLottie = lottie.loadAnimation({
+    container: document.getElementById('boxLottie'),
+    renderer: 'svg', loop: true, autoplay: true,
+    path: '/static/assets/box.json' // ЗАМЕНИ на свой файл/гиф
+  });
 
-    // Пример: любая бесплатная лотти (замени на свою)
-    const lottieAnim = lottie.loadAnimation({
-      container: lottieContainer,
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets3.lottiefiles.com/packages/lf20_q5pk6p1k.json'
+  const charContainer = document.getElementById('charLottie');
+  let charAnimIdle, charAnimThink, currentAnim = null;
+
+  function loadCharAnims() {
+    // idle
+    charAnimIdle = lottie.loadAnimation({
+      container: charContainer, renderer: 'svg', loop: true, autoplay: false,
+      path: '/static/assets/character_idle.json'
     });
+    // think (поверх idle – по факту будем подменять контейнер содержимым)
+    charAnimThink = lottie.loadAnimation({
+      container: charContainer, renderer: 'svg', loop: true, autoplay: false,
+      path: '/static/assets/character_think.json'
+    });
+    // начнём с idle
+    playAnim('idle');
+  }
 
-    function setStatus(msg, kind = 'info') {
-      statusEl.textContent = msg || '';
-      statusEl.className = 'mt-3 text-sm ' + (kind === 'error' ? 'text-red-600' : 'text-gray-500');
-    }
+  function playAnim(mode) {
+    // останавливаем обе и запускаем нужную
+    [charAnimIdle, charAnimThink].forEach(a => a && a.stop());
+    if (mode === 'think' && charAnimThink) { charAnimThink.play(); currentAnim = 'think'; return; }
+    if (charAnimIdle) { charAnimIdle.play(); currentAnim = 'idle'; }
+  }
 
-    function showCharacter() {
-      characterCard.classList.remove('opacity-0');
-      characterCard.classList.remove('hidden');
-      lottieAnim.play();
-    }
-    function hideCharacter() {
-      characterCard.classList.add('opacity-0');
-      setTimeout(() => characterCard.classList.add('hidden'), 250);
-      lottieAnim.stop();
-    }
+  // ====== DOM refs ======
+  const boxBtn     = document.getElementById('boxBtn');
+  const chatStage  = document.getElementById('chatStage');
+  const askForm    = document.getElementById('askForm');
+  const promptIn   = document.getElementById('promptInput');
+  const statusEl   = document.getElementById('status');
+  const answerCard = document.getElementById('answerCard');
+  const charHint   = document.getElementById('charHint');
 
-    function renderMarkdown(mdText) {
-      const html = marked.parse(mdText || '');
-      // Санитайзим
-      return DOMPurify.sanitize(html);
-    }
+  function setStatus(msg, kind='info') {
+    statusEl.textContent = msg || '';
+    statusEl.className = 'text-sm ' + (kind === 'error' ? 'text-red-600' : 'text-gray-500');
+  }
 
-    askForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const prompt = promptInput.value.trim();
-      if (!prompt) return;
+  function md(html) {
+    return DOMPurify.sanitize(marked.parse(html || ''));
+  }
 
-      // UI: старт
-      setStatus('Подключаем модель и готовим ответ…');
-      showCharacter();
-      charText.textContent = 'Думаю над ответом…';
-      answerCard.classList.add('hidden');
-      answerCard.innerHTML = '';
+  // ====== Flow ======
+  boxBtn.addEventListener('click', () => {
+    // спрятать коробку → показать сцену чата
+    boxBtn.classList.add('fade-out');
+    setTimeout(() => {
+      boxBtn.classList.add('hidden');
+      chatStage.classList.remove('hidden');
+      chatStage.classList.add('fade-in');
+      loadCharAnims();
+      promptIn.focus();
+    }, 250);
+  });
 
-      // Вызов API (non-stream)
-      try {
-        const resp = await fetch('/api/ask', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ prompt, stream: false })
-        });
+  askForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const prompt = promptIn.value.trim();
+    if (!prompt) return;
 
-        if (!resp.ok) {
-          const err = await resp.json().catch(() => ({}));
-          throw new Error(err.message || `HTTP ${resp.status}`);
-        }
+    // UI подготовка
+    setStatus('Думаю над ответом…');
+    answerCard.classList.add('hidden');
+    answerCard.innerHTML = '';
+    charHint.textContent = 'Думаю над ответом…';
+    playAnim('think');
+    askForm.querySelector('button').disabled = true;
 
-        const data = await resp.json(); // { content: "…" }
-        const html = renderMarkdown(data.content);
-        answerCard.innerHTML = html;
-        answerCard.classList.remove('hidden');
-        setStatus('');
-
-        // UI: персонаж исчезает
-        hideCharacter();
-      } catch (err) {
-        console.error(err);
-        setStatus(
-          err.message?.includes('no_responsive_model')
-            ? 'Не удалось подключиться к модели. Откройте LM Studio → Server → Start Server и загрузите модель.'
-            : `Ошибка: ${err.message || 'неизвестная'}`,
-          'error'
-        );
-        // Персонаж оставим на экране, чтобы пользователь повторил попытку/исправил
+    try {
+      const resp = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, stream: false })
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${resp.status}`);
       }
-    });
-  </script>
+      const data = await resp.json(); // { content }
+      // показать ответ
+      answerCard.innerHTML = md(data.content);
+      answerCard.classList.remove('hidden');
+      answerCard.classList.add('fade-in');
+      setStatus('');
+      charHint.textContent = 'Готово!';
+    } catch (err) {
+      setStatus(
+        err.message?.includes('no_responsive_model')
+          ? 'Не удалось подключиться к модели. Открой LM Studio → Server → Start Server и загрузите модель.'
+          : `Ошибка: ${err.message || 'неизвестная'}`,
+        'error'
+      );
+      charHint.textContent = 'Упс… попробуем ещё?';
+    } finally {
+      // персонаж «перестаёт думать»; можно спрятать его, если нужно
+      playAnim('idle');
+      askForm.querySelector('button').disabled = false;
+    }
+  });
+</script>
 </body>
 </html>
