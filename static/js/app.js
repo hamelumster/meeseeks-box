@@ -1,11 +1,11 @@
 // ====== Lottie setup ======
-const boxLottie = lottie.loadAnimation({
-  container: document.getElementById('boxLottie'),
-  renderer: 'svg',
-  loop: true,
-  autoplay: true,
-  path: '/static/assets/box.json'
-});
+// const boxLottie = lottie.loadAnimation({
+//   container: document.getElementById('boxLottie'),
+//   renderer: 'svg',
+//   loop: true,
+//   autoplay: true,
+//   path: '/static/assets/box.json'
+// });
 
 const charContainer = document.getElementById('charLottie');
 let charAnimIdle, charAnimThink, currentAnim = null;
@@ -36,6 +36,7 @@ function playAnim(mode) {
 
 // ====== DOM refs ======
 const boxBtn     = document.getElementById('boxBtn');
+const boxImg     = document.getElementById('boxImg');
 const chatStage  = document.getElementById('chatStage');
 const askForm    = document.getElementById('askForm');
 const promptIn   = document.getElementById('promptInput');
@@ -79,21 +80,50 @@ function addCopyButtons(root) {
 
 // ====== Flow ======
 boxBtn.addEventListener('click', () => {
-  boxBtn.classList.add('fade-out');
+  // показать "нажатую" коробку
+  if (boxImg) boxImg.src = '/static/assets/box2.svg';
+  boxBtn.setAttribute('aria-pressed', 'true');
+  boxBtn.disabled = true;
+
+  const pressDelay = 200;        // сколько держим "нажатую" картинку (box2)
+  const postReleaseHold = 180;   // сколько держим "отпущенную" (box1) перед исчезновением
+
+  // 1) подержать box2 (нажатую)
   setTimeout(() => {
-    boxBtn.classList.add('hidden');
-    chatStage.classList.remove('hidden');
-    chatStage.classList.add('fade-in');
-    loadCharAnims();
+    // 2) вернуть в исходное состояние (box1)
+    if (boxImg) boxImg.src = '/static/assets/box1.svg';
 
-    // ▼ вставь эти 3 строки
-    promptIn.value = '';
-    askForm.classList.remove('hidden', 'fade-out');
-    askForm.querySelector('button').disabled = false;
+    // 3) ещё чуть-чуть подержать box1
+    setTimeout(() => {
+      // 4) плавно скрыть блок с коробкой
+      boxBtn.classList.add('fade-out');
 
-    promptIn.focus();
-  }, 250);
+      setTimeout(() => {
+        boxBtn.classList.add('hidden');
+
+        // показать сцену чата
+        chatStage.classList.remove('hidden');
+        chatStage.classList.add('fade-in');
+
+        // анимации персонажа
+        loadCharAnims();
+
+        // сброс формы
+        promptIn.value = '';
+        askForm.classList.remove('hidden', 'fade-out');
+        askForm.querySelector('button').disabled = false;
+        promptIn.focus();
+
+        // финальная очистка/сброс кнопки (если когда-нибудь вернёмся на экран коробки)
+        boxBtn.removeAttribute('aria-pressed');
+        boxBtn.disabled = false;
+        boxBtn.classList.remove('fade-out');
+      }, 250); // длительность твоего fade-out
+    }, postReleaseHold);
+  }, pressDelay);
 });
+
+
 
 askForm.addEventListener('submit', async (e) => {
   e.preventDefault();
