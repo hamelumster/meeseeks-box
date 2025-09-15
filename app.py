@@ -5,7 +5,7 @@ from config import SYSTEM_PROMPT
 from lm_client import detect_first_responsive_model
 from utils import _clean_content_from_response, LM_BASE
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/static")
 
 @app.get("/")
 def index():
