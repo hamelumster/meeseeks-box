@@ -1,0 +1,36 @@
+/* анимации появления */
+.fade-in  { animation: fade-in  .25s ease forwards; }
+.fade-out { animation: fade-out .25s ease forwards; }
+@keyframes fade-in  { from{opacity:0; transform:scale(.97)} to{opacity:1; transform:scale(1)} }
+@keyframes fade-out { from{opacity:1; transform:scale(1)}  to{opacity:0; transform:scale(.97)} }
+
+/* Markdown-контент */
+#answerCard.prose pre {
+  background: #0b1220;
+  color: #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+#answerCard.prose pre code {
+  background: transparent;
+  font-size: 0.95rem;      /* увеличенный размер */
+  line-height: 1.6;
+}
+#answerCard.prose :not(pre) > code {
+  font-size: 0.95rem;
+  background: #0b1220;
+  color: #e5e7eb;
+  padding: .15rem .35rem;
+  border-radius: 0.375rem;
+}
+#answerCard.prose ul { list-style: disc; padding-left: 1.25rem; }
+#answerCard.prose ol { list-style: decimal; padding-left: 1.25rem; }
+
+/* повысим контраст комментариев */
+#answerCard .hljs-comment,
+#answerCard .hljs-quote {
+  color: #9aa4b2 !important;
+  font-style: italic;
+  opacity: 1;
+}
