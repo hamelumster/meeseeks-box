@@ -24,6 +24,10 @@
     .fade-out { animation: fade-out .25s ease forwards; }
     @keyframes fade-in  { from{opacity:0; transform:scale(.97)} to{opacity:1; transform:scale(1)} }
     @keyframes fade-out { from{opacity:1; transform:scale(1)}  to{opacity:0; transform:scale(.97)} }
+
+    /* увеличение шрифта кода */
+  #answerCard.prose pre code { font-size: 0.95rem; line-height: 1.6; }
+  #answerCard.prose :not(pre) > code { font-size: 0.95rem; }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen grid place-items-center">
