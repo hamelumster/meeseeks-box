@@ -85,6 +85,12 @@ boxBtn.addEventListener('click', () => {
     chatStage.classList.remove('hidden');
     chatStage.classList.add('fade-in');
     loadCharAnims();
+
+    // ▼ вставь эти 3 строки
+    promptIn.value = '';
+    askForm.classList.remove('hidden', 'fade-out');
+    askForm.querySelector('button').disabled = false;
+
     promptIn.focus();
   }, 250);
 });
@@ -126,6 +132,13 @@ askForm.addEventListener('submit', async (e) => {
     }
     // кнопки «Копировать»
     addCopyButtons(answerCard);
+
+    // СКРЫВАЕМ ФОРМУ ПОСЛЕ ОТВЕТА
+    askForm.classList.add('fade-out');
+    setTimeout(() => {
+      askForm.classList.add('hidden');
+      askForm.classList.remove('fade-out');
+    }, 250);
 
   } catch (err) {
     setStatus(
