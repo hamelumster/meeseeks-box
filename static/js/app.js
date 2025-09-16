@@ -44,6 +44,25 @@ const statusEl   = document.getElementById('status');
 const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
 
+// авто-высота textarea
+function autosize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+// отправка по Enter, перенос по Shift+Enter
+promptIn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    askForm.requestSubmit(); // отправляем форму
+  }
+});
+
+// растить поле по мере ввода
+promptIn.addEventListener('input', () => autosize(promptIn));
+// первичная подгонка
+autosize(promptIn);
+
 function setStatus(msg, kind='info') {
   statusEl.textContent = msg || '';
   statusEl.className = 'text-sm ' + (kind === 'error' ? 'text-red-600' : 'text-gray-500');
@@ -112,6 +131,7 @@ boxBtn.addEventListener('click', () => {
         promptIn.value = '';
         askForm.classList.remove('hidden', 'fade-out');
         askForm.querySelector('button').disabled = false;
+        autosize(promptIn);
         promptIn.focus();
 
         // финальная очистка/сброс кнопки (если когда-нибудь вернёмся на экран коробки)
@@ -129,6 +149,7 @@ askForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const prompt = promptIn.value.trim();
   if (!prompt) return;
+  autosize(promptIn);
 
   setStatus('Думаю над ответом…');
   answerCard.classList.add('hidden');
