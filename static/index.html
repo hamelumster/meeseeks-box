@@ -21,26 +21,30 @@
   <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body class="bg-gray-50 min-h-screen grid place-items-center">
-  <div class="w-full max-w-2xl p-6">
+  <div class="w-full max-w-2xl p-6 -translate-y-12 md:-translate-y-12">
     <!-- Шаг 1: Коробка по центру -->
     <button id="boxBtn"
       class="w-full aspect-video rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow">
       <img id="boxImg" src="/static/assets/box1.svg" alt="Коробка"
-      class="w-64 h-64 select-none pointer-events-none" />
-      <div class="text-sm text-gray-500 mt-2">Нажми, чтобы начать</div>
+      class="w-72 h-72 select-none pointer-events-none" />
+      <div class="text-sm text-gray-500 mt-2">Нажми на кнопку, чтобы появился мистер мисикс! </div>
     </button>
 
-    <!-- Шаг 2: Персонаж + ввод (скрыто до клика) -->
-    <section id="chatStage" class="hidden mt-6 space-y-4">
-      <div class="rounded-3xl bg-white shadow p-5 flex items-center gap-4">
-        <div id="charLottie" class="w-28 h-28"></div>
-        <div class="text-sm text-gray-600" id="charHint">Привет! Задай вопрос 🙂</div>
+    <!-- Шаг 2: Персонаж + ввод -->
+    <section id="chatStage" class="hidden mt-6 space-y-3">
+      <img id="charAppear" src="/static/assets/msks_appear1.svg" alt="Появление персонажа"
+      class="mx-auto w-90 h-90 md:w-120 md:h-120 select-none" />
+      <div class="rounded-3xl bg-white shadow px-4 py-1 flex items-center gap-3">
+        <div id="charLottie" class="w-16 h-16"></div>
+        <div class="text-sm text-gray-600" id="charHint">Я мистер Миииисиииикс! Посмотрите на меня!</div>
       </div>
 
-      <form id="askForm" class="flex gap-2">
-        <input id="promptInput" type="text" placeholder="Сколько чудес света в мире?"
-               class="flex-1 rounded-2xl border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-               required />
+      <form id="askForm" class="flex gap-2 items-start">
+        <textarea id="promptInput" placeholder="Сколько чудес света в мире?"
+            class="flex-1 rounded-2xl border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500
+                   resize-none overflow-hidden leading-6 min-h-[3rem]"
+            rows="1" required></textarea>
+
         <button class="rounded-2xl bg-blue-600 text-white px-5 py-3 hover:bg-blue-700 disabled:opacity-50">
           Отправить
         </button>
