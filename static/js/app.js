@@ -45,6 +45,22 @@ const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
 const charAppear = document.getElementById('charAppear'); 
 
+// плавная замена изображения персонажа
+function swapChar(src) {
+  if (!charAppear) return;
+  // уводим текущую картинку
+  charAppear.style.opacity = 0;
+
+  // подгружаем новую, чтобы не мигало
+  const img = new Image();
+  img.onload = () => {
+    charAppear.src = src;
+    // вернуть непрозрачность на следующем кадре
+    requestAnimationFrame(() => { charAppear.style.opacity = 1; });
+  };
+  img.src = src;
+}
+
 // авто-высота textarea
 function autosize(el) {
   el.style.height = 'auto';
@@ -128,7 +144,7 @@ boxBtn.addEventListener('click', () => {
         // анимации персонажа
         loadCharAnims();
 
-        if (charAppear) charAppear.src = '/static/assets/msks_appear1.svg';
+        swapChar('/static/assets/msks_appear1.svg');
         charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
 
         // сброс формы
@@ -158,8 +174,8 @@ askForm.addEventListener('submit', async (e) => {
   setStatus('...');
   answerCard.classList.add('hidden');
   answerCard.innerHTML = '';
-  charHint.textContent = 'Ооооо, сейчас я тебе скажууууу';
-  if (charAppear) charAppear.src = '/static/assets/msks_think.svg';
+  charHint.textContent = 'Ооооо, сейчас я тебе отвечу!';
+  swapChar('/static/assets/msks_think.svg');
   playAnim('think');
   askForm.querySelector('button').disabled = true;
 
@@ -181,6 +197,7 @@ askForm.addEventListener('submit', async (e) => {
     answerCard.classList.add('fade-in');
     setStatus('');
     charHint.textContent = 'Готово!';
+    swapChar('/static/assets/msks_done.svg');
 
     // подсветка кода
     if (window.hljs) {
