@@ -43,6 +43,7 @@ const promptIn   = document.getElementById('promptInput');
 const statusEl   = document.getElementById('status');
 const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
+const charAppear = document.getElementById('charAppear'); 
 
 // авто-высота textarea
 function autosize(el) {
@@ -127,6 +128,9 @@ boxBtn.addEventListener('click', () => {
         // анимации персонажа
         loadCharAnims();
 
+        if (charAppear) charAppear.src = '/static/assets/msks_appear1.svg';
+        charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
+
         // сброс формы
         promptIn.value = '';
         askForm.classList.remove('hidden', 'fade-out');
@@ -151,10 +155,11 @@ askForm.addEventListener('submit', async (e) => {
   if (!prompt) return;
   autosize(promptIn);
 
-  setStatus('Думаю над ответом…');
+  setStatus('...');
   answerCard.classList.add('hidden');
   answerCard.innerHTML = '';
-  charHint.textContent = 'Думаю над ответом…';
+  charHint.textContent = 'Ооооо, сейчас я тебе скажууууу';
+  if (charAppear) charAppear.src = '/static/assets/msks_think.svg';
   playAnim('think');
   askForm.querySelector('button').disabled = true;
 
