@@ -34,10 +34,17 @@
     <section id="chatStage" class="hidden mt-6 space-y-3">
       <img id="charAppear" src="/static/assets/msks_appear1.svg" alt="Появление персонажа"
       class="mx-auto w-90 h-90 md:w-120 md:h-120 select-none" />
-      <div class="rounded-3xl bg-white shadow px-4 py-1 flex items-center gap-3">
+      <!-- <div class="rounded-3xl bg-white shadow px-4 py-1 flex items-center gap-3">
         <div id="charLottie" class="w-16 h-16"></div>
         <div class="text-sm text-gray-600" id="charHint">Я мистер Миииисиииикс! Посмотрите на меня!</div>
+      </div> -->
+      <div class="rounded-3xl bg-white shadow px-6 py-3 grid place-items-center min-h-[64px]">
+      <div id="charLottie" class="hidden"></div>
+        <div id="charHint" class="text-sm text-gray-600 text-center">
+        Я мистер Миииисиииикс! Посмотрите на меня!
+        </div>
       </div>
+
 
       <form id="askForm" class="flex gap-2 items-start">
         <textarea id="promptInput" placeholder="Сколько чудес света в мире?"
