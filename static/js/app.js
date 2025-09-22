@@ -44,6 +44,7 @@ const statusEl   = document.getElementById('status');
 const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
 const charAppear = document.getElementById('charAppear'); 
+const pageWrap  = document.getElementById('pageWrap');
 
 // ==== КАДРЫ ПОСЛЕ "ГОТОВО" ====
 const DONE_FRAMES = [
@@ -53,8 +54,10 @@ const DONE_FRAMES = [
   '/static/assets/Frame_7.svg',
   '/static/assets/Frame_8.svg',
   '/static/assets/Frame_9.svg',
-  '/static/assets/Frame_10.svg'
+  // '/static/assets/Frame_10.svg'
 ];
+
+const EMPTY_FRAME = '/static/assets/Frame_10.svg';
 
 // утилиты
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -180,6 +183,13 @@ boxBtn.addEventListener('click', () => {
       setTimeout(() => {
         boxBtn.classList.add('hidden');
 
+        document.body.classList.remove('grid', 'place-items-center');
+        document.body.classList.add('pt-6');
+        if (pageWrap) {
+        pageWrap.classList.remove('-translate-y-12', 'md:-translate-y-12');
+        pageWrap.classList.add('mx-auto');
+        }
+
         // показать сцену чата
         chatStage.classList.remove('hidden');
         chatStage.classList.add('fade-in');
@@ -189,6 +199,7 @@ boxBtn.addEventListener('click', () => {
 
         // прелоад финальных кадров
         preloadFrames(DONE_FRAMES);
+        preloadFrames([EMPTY_FRAME]);
 
         swapChar('/static/assets/msks_appear1.svg');
         charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
@@ -249,23 +260,17 @@ askForm.addEventListener('submit', async (e) => {
 
     currentSeq.canceled = true;
     currentSeq = { canceled: false };
-    playFrameSequence(DONE_FRAMES, { fps: 6, holdLast: false, cancelToken: currentSeq })
-    .then(() => {
-    if (!currentSeq.canceled) {
-      swapChar(EMPTY_FRAME); // поставить «пустой фрейм» после анимации
-      }
+    await playFrameSequence(DONE_FRAMES, {
+    fps: 9,               // скорость 
+    holdLast: false,      // не держим последний — сразу перейдём к пустому кадру
+    cancelToken: currentSeq
     });
 
-    // отменяем любую предыдущую последовательность
-    currentSeq.canceled = true;
-    currentSeq = { canceled: false };
-
-    // сначала показываем "done"-картинку (у тебя уже есть строка выше)
-    swapChar('/static/assets/msks_done.svg');
-
-    // затем проигрываем 6 кадров последовательно (6 к.с.)
-    playFrameSequence(DONE_FRAMES, { fps: 9, holdLast: true, cancelToken: currentSeq });
-
+    // после последовательности - заглушка 
+    if (!currentSeq.canceled) {
+    swapChar(EMPTY_FRAME);
+    }
+    
     // подсветка кода
     if (window.hljs) {
       answerCard.querySelectorAll('pre code').forEach(el => window.hljs.highlightElement(el));
