@@ -45,6 +45,49 @@ const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
 const charAppear = document.getElementById('charAppear'); 
 
+// ==== КАДРЫ ПОСЛЕ "ГОТОВО" ====
+const DONE_FRAMES = [
+  '/static/assets/Frame_4.svg',
+  '/static/assets/Frame_5.svg',
+  '/static/assets/Frame_6.svg',
+  '/static/assets/Frame_7.svg',
+  '/static/assets/Frame_8.svg',
+  '/static/assets/Frame_9.svg',
+  '/static/assets/Frame_10.svg'
+];
+
+// утилиты
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+function preloadFrames(frames = []) {
+  return Promise.all(frames.map(src => new Promise(res => {
+    const img = new Image();
+    img.onload = () => res();
+    img.onerror = () => res(); // не блокируем из-за ошибок
+    img.src = src;
+  })));
+}
+
+// глобальный контроллер текущей последовательности
+let currentSeq = { canceled: false };
+
+/**
+ * Проигрывает массив кадров c заданной частотой
+ * @param {string[]} frames
+ * @param {{fps?: number, holdLast?: boolean, cancelToken?: {canceled:boolean}}} opts
+ */
+async function playFrameSequence(frames, { fps = 8, holdLast = true, cancelToken } = {}) {
+  if (!frames || !frames.length) return;
+  const interval = Math.max(30, Math.floor(1000 / fps));
+  await preloadFrames(frames);
+  for (let i = 0; i < frames.length; i++) {
+    if (cancelToken?.canceled) return; // прервали — выходим
+    swapChar(frames[i]);                // твоя плавная подмена
+    await sleep(interval);
+  }
+  // пока держим последний кадр
+}
+
 // плавная замена изображения персонажа
 function swapChar(src) {
   if (!charAppear) return;
@@ -144,6 +187,9 @@ boxBtn.addEventListener('click', () => {
         // анимации персонажа
         loadCharAnims();
 
+        // прелоад финальных кадров
+        preloadFrames(DONE_FRAMES);
+
         swapChar('/static/assets/msks_appear1.svg');
         charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
 
@@ -158,7 +204,7 @@ boxBtn.addEventListener('click', () => {
         boxBtn.removeAttribute('aria-pressed');
         boxBtn.disabled = false;
         boxBtn.classList.remove('fade-out');
-      }, 250); // длительность твоего fade-out
+      }, 250); // длительность fade-out
     }, postReleaseHold);
   }, pressDelay);
 });
@@ -198,6 +244,24 @@ askForm.addEventListener('submit', async (e) => {
     setStatus('');
     charHint.textContent = 'Готово!';
     swapChar('/static/assets/msks_done.svg');
+    currentSeq.canceled = true;
+    currentSeq = { canceled: false };
+    playFrameSequence(DONE_FRAMES, { fps: 6, holdLast: false, cancelToken: currentSeq })
+    .then(() => {
+    if (!currentSeq.canceled) {
+      swapChar(EMPTY_FRAME); // поставить «пустой фрейм» после анимации
+      }
+    });
+
+    // отменяем любую предыдущую последовательность
+    currentSeq.canceled = true;
+    currentSeq = { canceled: false };
+
+    // сначала показываем "done"-картинку (у тебя уже есть строка выше)
+    swapChar('/static/assets/msks_done.svg');
+
+    // затем проигрываем 6 кадров последовательно (6 к.с.)
+    playFrameSequence(DONE_FRAMES, { fps: 8, holdLast: true, cancelToken: currentSeq });
 
     // подсветка кода
     if (window.hljs) {
