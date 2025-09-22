@@ -244,6 +244,9 @@ askForm.addEventListener('submit', async (e) => {
     setStatus('');
     charHint.textContent = 'Готово!';
     swapChar('/static/assets/msks_done.svg');
+
+    await sleep(1500);
+
     currentSeq.canceled = true;
     currentSeq = { canceled: false };
     playFrameSequence(DONE_FRAMES, { fps: 6, holdLast: false, cancelToken: currentSeq })
@@ -261,7 +264,7 @@ askForm.addEventListener('submit', async (e) => {
     swapChar('/static/assets/msks_done.svg');
 
     // затем проигрываем 6 кадров последовательно (6 к.с.)
-    playFrameSequence(DONE_FRAMES, { fps: 8, holdLast: true, cancelToken: currentSeq });
+    playFrameSequence(DONE_FRAMES, { fps: 9, holdLast: true, cancelToken: currentSeq });
 
     // подсветка кода
     if (window.hljs) {
