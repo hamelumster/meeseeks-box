@@ -261,12 +261,18 @@ askForm.addEventListener('submit', async (e) => {
     charHint.textContent = 'Готово!';
     swapChar('/static/assets/msks_done.svg');
 
-    await sleep(1500);
+    setTimeout(() => {
+    if (!chatStage.classList.contains('hidden')) {
+    charHint.textContent = 'Мистер Мисикс исчезает после того, как выполняет просьбу...'; // ← твой новый текст
+    }
+    }, 2000);
+
+    await sleep(1600);
 
     currentSeq.canceled = true;
     currentSeq = { canceled: false };
     await playFrameSequence(DONE_FRAMES, {
-    fps: 9,               // скорость 
+    fps: 16,               // скорость 
     holdLast: false,      // не держим последний — сразу перейдём к пустому кадру
     cancelToken: currentSeq
     });
