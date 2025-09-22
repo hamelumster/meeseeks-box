@@ -189,7 +189,7 @@ boxBtn.addEventListener('click', () => {
 
         if (pageWrap) {
         pageWrap.classList.remove('-translate-y-12', 'md:-translate-y-12');
-        pageWrap.style.paddingTop = '8px'; // <<< маленький верхний отступ (настрой: 4/8/12px и т.д.)
+        pageWrap.style.paddingTop = '8px';
         }
 
         chatStage.style.marginTop = '2px';
