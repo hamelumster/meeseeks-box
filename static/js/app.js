@@ -45,6 +45,7 @@ const answerCard = document.getElementById('answerCard');
 const charHint   = document.getElementById('charHint');
 const charAppear = document.getElementById('charAppear'); 
 const pageWrap  = document.getElementById('pageWrap');
+const intro = document.getElementById('intro');
 
 // ==== КАДРЫ ПОСЛЕ "ГОТОВО" ====
 const DONE_FRAMES = [
@@ -183,12 +184,17 @@ boxBtn.addEventListener('click', () => {
       setTimeout(() => {
         boxBtn.classList.add('hidden');
 
-        document.body.classList.remove('grid', 'place-items-center');
-        document.body.classList.add('pt-6');
+        // Спрятать экран приветствия (центрированную часть)
+        if (intro) intro.classList.add('hidden');
+
         if (pageWrap) {
         pageWrap.classList.remove('-translate-y-12', 'md:-translate-y-12');
-        pageWrap.classList.add('mx-auto');
+        pageWrap.style.paddingTop = '8px'; // <<< маленький верхний отступ (настрой: 4/8/12px и т.д.)
         }
+
+        chatStage.style.marginTop = '2px';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // показать сцену чата
         chatStage.classList.remove('hidden');

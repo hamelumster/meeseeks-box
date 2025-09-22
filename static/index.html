@@ -20,15 +20,17 @@
   <!-- стили -->
   <link rel="stylesheet" href="/static/css/app.css">
 </head>
-<body class="bg-gray-50 min-h-screen grid place-items-center">
-  <div id="pageWrap" class="w-full max-w-2xl p-6 -translate-y-12 md:-translate-y-12">
-    <!-- Шаг 1: Коробка по центру -->
-    <button id="boxBtn"
-      class="w-full aspect-video rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow">
-      <img id="boxImg" src="/static/assets/box1.svg" alt="Коробка"
-      class="w-72 h-72 select-none pointer-events-none" />
-      <div class="text-sm text-gray-500 mt-2">Нажми на кнопку, чтобы появился мистер мисикс! </div>
-    </button>
+<body class="bg-gray-50 min-h-screen">
+  <div id="pageWrap" class="w-full max-w-2xl px-6 pt-1 pb-4 mx-auto">
+    <!-- Экран приветствия: центрируем ТОЛЬКО его -->
+    <div id="intro" class="min-h-screen grid place-items-center">
+      <button id="boxBtn"
+        class="w-full aspect-video rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow">
+        <img id="boxImg" src="/static/assets/box1.svg" alt="Коробка"
+             class="w-72 h-72 select-none pointer-events-none" />
+        <div class="text-sm text-gray-500 mt-2">Нажми на кнопку, чтобы появился мистер мисикс!</div>
+      </button>
+    </div>
 
     <!-- Шаг 2: Персонаж + ввод -->
     <section id="chatStage" class="hidden mt-6 space-y-3">
