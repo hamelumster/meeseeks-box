@@ -234,7 +234,6 @@ askForm.addEventListener('submit', async (e) => {
   if (!prompt) return;
   autosize(promptIn);
 
-  setStatus('...');
   answerCard.classList.add('hidden');
   answerCard.innerHTML = '';
   charHint.textContent = 'Ооооо, сейчас я тебе отвечу!';
