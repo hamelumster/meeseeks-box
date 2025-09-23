@@ -228,6 +228,11 @@ function showInlineBox() {
       chatBoxBtn.removeAttribute('aria-pressed');
     }
 
+    // плавно скрываем контейнер коробки (весь charStage)
+    charStage.classList.add('fade-out');
+    await sleep(220);
+    charStage.classList.remove('fade-out');
+
     await restartFlowFromBox();
   }, { once: true });
 
@@ -252,7 +257,7 @@ function clearAnswer() {
 }
 
 // Вернуть персонажа и ввод в исходный вид (внутри chatStage)
-function showCharacter() {
+async function showCharacter() {
   if (!charStage) return;
 
   // Вернём картинку персонажа на место
@@ -271,12 +276,24 @@ function showCharacter() {
   swapChar('/static/assets/msks_appear1.svg');
   playAnim('idle'); // на старте — idle
 
-  // Вернуть форму
-  askForm.classList.remove('hidden');
+  // Готовим форму, но пока не показываем мгновенно
+  askForm.classList.add('hidden');
+  askForm.classList.remove('fade-out');
   askForm.querySelector('button').disabled = false;
   promptIn.value = '';
   autosize(promptIn);
-  promptIn.focus();
+
+  // Мягко: сначала персонаж, потом — форма с небольшой задержкой
+  await swapChar('/static/assets/msks_appear1.svg');  // плавная смена кадра персонажа
+  setTimeout(() => {
+    askForm.classList.remove('hidden');
+    askForm.classList.add('fade-in');
+    // снять класс после анимации, чтобы не влиял дальше
+    setTimeout(() => {
+      askForm.classList.remove('fade-in');
+      promptIn.focus(); // фокус только когда форма уже «вышла»
+    }, 250);
+  }, 90);
 
   // Прелоад кадров, если нужно переигрывать потом
   preloadFrames(DONE_FRAMES);
@@ -293,7 +310,7 @@ async function restartFlowFromBox() {
   clearAnswer();
 
   // показать персонажа и поле ввода
-  showCharacter();
+  await showCharacter();
 }
 
 
