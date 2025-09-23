@@ -1,12 +1,3 @@
-// ====== Lottie setup ======
-// const boxLottie = lottie.loadAnimation({
-//   container: document.getElementById('boxLottie'),
-//   renderer: 'svg',
-//   loop: true,
-//   autoplay: true,
-//   path: '/static/assets/box.json'
-// });
-
 const charContainer = document.getElementById('charLottie');
 let charAnimIdle, charAnimThink, currentAnim = null;
 
@@ -43,7 +34,6 @@ const promptIn = document.getElementById('promptInput');
 const statusEl = document.getElementById('status');
 const answerCard = document.getElementById('answerCard');
 const charHint = document.getElementById('charHint');
-// const charAppear = document.getElementById('charAppear');
 const pageWrap = document.getElementById('pageWrap');
 const intro = document.getElementById('intro');
 const charStage = document.getElementById('charStage');
@@ -56,7 +46,6 @@ const DONE_FRAMES = [
   '/static/assets/Frame_7.svg',
   '/static/assets/Frame_8.svg',
   '/static/assets/Frame_9.svg',
-  // '/static/assets/Frame_10.svg'
 ];
 
 const EMPTY_FRAME = '/static/assets/Frame_10.svg';
@@ -87,7 +76,7 @@ async function playFrameSequence(frames, { fps = 8, holdLast = true, cancelToken
   await preloadFrames(frames);
   for (let i = 0; i < frames.length; i++) {
     if (cancelToken?.canceled) return; // прервали — выходим
-    swapChar(frames[i]);                // твоя плавная подмена
+    swapChar(frames[i]);
     await sleep(interval);
   }
   // пока держим последний кадр
@@ -175,17 +164,14 @@ function showInlineBox() {
          focus:outline-none focus:ring-0 focus-visible:outline-none border-0">
       <img id="chatBoxImg" src="/static/assets/box1.svg" alt="Коробка"
            class="w-40 h-40 md:w-48 md:h-48 select-none pointer-events-none" />
-      <div class="text-sm text-gray-500 mt-2">Нажми, чтобы вызвать мистера Мисикса снова</div>
+      <div class="text-sm text-gray-500 mt-2">Нажми на кнопку, чтобы вызвать мистера Мисикса снова</div>
     </button>
   `;
 
   // перезапустить fade-in анимацию для контейнера
   charStage.classList.remove('fade-in');
-  void charStage.offsetWidth;      // force reflow
+  void charStage.offsetWidth; // force reflow
   charStage.classList.add('fade-in');
-
-  // подсказка остаётся как есть; можно обновить при желании:
-  // charHint.textContent = 'Нажми на коробку, чтобы начать заново';
 
   const chatBoxBtn = document.getElementById('chatBoxBtn');
   const chatBoxImg = document.getElementById('chatBoxImg');
@@ -246,7 +232,7 @@ function showCharacter() {
 
   // перезапустить fade-in анимацию для контейнера
   charStage.classList.remove('fade-in');
-  void charStage.offsetWidth;      // force reflow
+  void charStage.offsetWidth; // force reflow
   charStage.classList.add('fade-in');
 
   // Подсказка и анимация
@@ -287,8 +273,8 @@ boxBtn.addEventListener('click', () => {
   boxBtn.setAttribute('aria-pressed', 'true');
   boxBtn.disabled = true;
 
-  const pressDelay = 200;        // сколько держим "нажатую" картинку (box2)
-  const postReleaseHold = 180;   // сколько держим "отпущенную" (box1) перед исчезновением
+  const pressDelay = 200; // сколько держим "нажатую" картинку (box2)
+  const postReleaseHold = 180; // сколько держим "отпущенную" (box1) перед исчезновением
 
   // 1) подержать box2 (нажатую)
   setTimeout(() => {
@@ -336,7 +322,7 @@ boxBtn.addEventListener('click', () => {
         autosize(promptIn);
         promptIn.focus();
 
-        // финальная очистка/сброс кнопки (если когда-нибудь вернёмся на экран коробки)
+        // финальная очистка/сброс кнопки
         boxBtn.removeAttribute('aria-pressed');
         boxBtn.disabled = false;
         boxBtn.classList.remove('fade-out');
@@ -344,8 +330,6 @@ boxBtn.addEventListener('click', () => {
     }, postReleaseHold);
   }, pressDelay);
 });
-
-
 
 askForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -382,7 +366,7 @@ askForm.addEventListener('submit', async (e) => {
 
     setTimeout(() => {
     if (!chatStage.classList.contains('hidden')) {
-    charHint.textContent = 'Мистер Мисикс исчезает после того, как выполняет просьбу...'; // ← твой новый текст
+    charHint.textContent = 'Мистер Мисикс исчезает после того, как выполняет просьбу...';
     }
     }, 2000);
 
@@ -391,8 +375,8 @@ askForm.addEventListener('submit', async (e) => {
     currentSeq.canceled = true;
     currentSeq = { canceled: false };
     await playFrameSequence(DONE_FRAMES, {
-    fps: 16,               // скорость 
-    holdLast: false,      // не держим последний — сразу перейдём к пустому кадру
+    fps: 16,
+    holdLast: false,
     cancelToken: currentSeq
     });
 
