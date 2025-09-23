@@ -76,29 +76,60 @@ async function playFrameSequence(frames, { fps = 8, holdLast = true, cancelToken
   await preloadFrames(frames);
   for (let i = 0; i < frames.length; i++) {
     if (cancelToken?.canceled) return; // прервали — выходим
-    swapChar(frames[i]);
+    swapChar(frames[i], { instant: true });
     await sleep(interval);
   }
   // пока держим последний кадр
 }
 
-// плавная замена изображения персонажа
-function swapChar(src) {
+// Плавная смена картинки: сперва плавно прячем, затем меняем src и плавно показываем.
+// Для flipbook/быстрой подмены используем опцию { instant: true }.
+function waitTransitionEnd(el, prop = 'opacity', timeout = 200) {
+  return new Promise(resolve => {
+    let done = false;
+    const onEnd = (e) => {
+      if (e.propertyName === prop) {
+        done = true;
+        el.removeEventListener('transitionend', onEnd);
+        resolve();
+      }
+    };
+    el.addEventListener('transitionend', onEnd, { once: true });
+    setTimeout(() => { if (!done) { el.removeEventListener('transitionend', onEnd); resolve(); } }, timeout);
+  });
+}
+
+async function swapChar(src, { instant = false } = {}) {
   const imgHost = document.getElementById('charAppear');
   if (!imgHost) return;
 
-  // уводим текущую картинку
-  imgHost.style.opacity = 0;
+  // если уже та же картинка — ничего не делаем
+  if (imgHost.src && imgHost.src.endsWith(src)) return;
 
-  // подгружаем новую, чтобы не мигало
-  const img = new Image();
-  img.onload = () => {
+  if (instant) {
+    // моментальная подмена (для покадровой анимации)
+    imgHost.style.opacity = 1;
     imgHost.src = src;
-    // вернуть непрозрачность на следующем кадре
-    requestAnimationFrame(() => { imgHost.style.opacity = 1; });
-  };
-  img.src = src;
+    return;
+  }
+
+  // 1) плавно скрываем текущую
+  imgHost.style.opacity = 0;
+  await waitTransitionEnd(imgHost, 'opacity', 220);
+
+  // 2) ждём загрузку новой, чтобы не мигало
+  await new Promise(res => {
+    const img = new Image();
+    img.onload = res;
+    img.onerror = res; // не блокируемся на ошибке
+    img.src = src;
+  });
+
+  // 3) подменяем и плавно показываем
+  imgHost.src = src;
+  requestAnimationFrame(() => { imgHost.style.opacity = 1; });
 }
+
 
 // авто-высота textarea
 function autosize(el) {
@@ -340,7 +371,7 @@ askForm.addEventListener('submit', async (e) => {
   answerCard.classList.add('hidden');
   answerCard.innerHTML = '';
   charHint.textContent = 'Ооооо, сейчас я тебе отвечу!';
-  swapChar('/static/assets/msks_think.svg');
+  await swapChar('/static/assets/msks_think.svg');
   playAnim('think');
   askForm.querySelector('button').disabled = true;
 
@@ -362,7 +393,7 @@ askForm.addEventListener('submit', async (e) => {
     answerCard.classList.add('fade-in');
     setStatus('');
     charHint.textContent = 'Готово!';
-    swapChar('/static/assets/msks_done.svg');
+    await swapChar('/static/assets/msks_done.svg');
 
     setTimeout(() => {
     if (!chatStage.classList.contains('hidden')) {

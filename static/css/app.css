@@ -38,6 +38,7 @@
 /* плавная смена изображений персонажа */
 #charAppear {
   transition: opacity .25s ease;
+  will-change: opacity;
 }
 
 /* встроенная коробка в чате */
