@@ -39,3 +39,9 @@
 #charAppear {
   transition: opacity .25s ease;
 }
+
+/* встроенная коробка в чате */
+#chatBoxBtn { cursor: pointer; }
+#chatBoxImg { transition: transform .1s ease; }
+#chatBoxBtn[aria-pressed="true"] #chatBoxImg { transform: scale(0.98); }
+

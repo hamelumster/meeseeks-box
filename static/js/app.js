@@ -35,17 +35,18 @@ function playAnim(mode) {
 }
 
 // ====== DOM refs ======
-const boxBtn     = document.getElementById('boxBtn');
-const boxImg     = document.getElementById('boxImg');
-const chatStage  = document.getElementById('chatStage');
-const askForm    = document.getElementById('askForm');
-const promptIn   = document.getElementById('promptInput');
-const statusEl   = document.getElementById('status');
+const boxBtn = document.getElementById('boxBtn');
+const boxImg = document.getElementById('boxImg');
+const chatStage = document.getElementById('chatStage');
+const askForm = document.getElementById('askForm');
+const promptIn = document.getElementById('promptInput');
+const statusEl = document.getElementById('status');
 const answerCard = document.getElementById('answerCard');
-const charHint   = document.getElementById('charHint');
-const charAppear = document.getElementById('charAppear'); 
-const pageWrap  = document.getElementById('pageWrap');
+const charHint = document.getElementById('charHint');
+// const charAppear = document.getElementById('charAppear');
+const pageWrap = document.getElementById('pageWrap');
 const intro = document.getElementById('intro');
+const charStage = document.getElementById('charStage');
 
 // ==== КАДРЫ ПОСЛЕ "ГОТОВО" ====
 const DONE_FRAMES = [
@@ -94,16 +95,18 @@ async function playFrameSequence(frames, { fps = 8, holdLast = true, cancelToken
 
 // плавная замена изображения персонажа
 function swapChar(src) {
-  if (!charAppear) return;
+  const imgHost = document.getElementById('charAppear');
+  if (!imgHost) return;
+
   // уводим текущую картинку
-  charAppear.style.opacity = 0;
+  imgHost.style.opacity = 0;
 
   // подгружаем новую, чтобы не мигало
   const img = new Image();
   img.onload = () => {
-    charAppear.src = src;
+    imgHost.src = src;
     // вернуть непрозрачность на следующем кадре
-    requestAnimationFrame(() => { charAppear.style.opacity = 1; });
+    requestAnimationFrame(() => { imgHost.style.opacity = 1; });
   };
   img.src = src;
 }
@@ -160,6 +163,111 @@ function addCopyButtons(root) {
     pre.appendChild(btn);
   });
 }
+
+// Показ встроенной коробки в месте персонажа
+function showInlineBox() {
+  if (!charStage) return;
+
+  // верстаем кнопку-коробку прямо в место персонажа
+  charStage.innerHTML = `
+    <button id="chatBoxBtn"
+      class="w-full rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow py-4">
+      <img id="chatBoxImg" src="/static/assets/box1.svg" alt="Коробка"
+           class="w-40 h-40 md:w-48 md:h-48 select-none pointer-events-none" />
+      <div class="text-sm text-gray-500 mt-2">Нажми, чтобы вызвать мистера Мисикса снова</div>
+    </button>
+  `;
+
+  // подсказка остаётся как есть; можно обновить при желании:
+  // charHint.textContent = 'Нажми на коробку, чтобы начать заново';
+
+  const chatBoxBtn = document.getElementById('chatBoxBtn');
+  const chatBoxImg = document.getElementById('chatBoxImg');
+
+  if (!chatBoxBtn || !chatBoxImg) return;
+
+  // Прелоад обеих картинок коробки
+  preloadFrames(['/static/assets/box1.svg','/static/assets/box2.svg']);
+
+  chatBoxBtn.addEventListener('click', async () => {
+    // защита от даблкликов
+    if (chatBoxBtn.disabled) return;
+    chatBoxBtn.disabled = true;
+    chatBoxBtn.setAttribute('aria-pressed', 'true');
+
+    // мини-анимация нажатия: box1 -> box2 -> box1
+    try {
+      chatBoxImg.src = '/static/assets/box2.svg';
+      await sleep(180);
+      chatBoxImg.src = '/static/assets/box1.svg';
+      await sleep(160);
+    } finally {
+      chatBoxBtn.removeAttribute('aria-pressed');
+    }
+
+    await restartFlowFromBox();
+  }, { once: true });
+
+  // доступность: фокус на кнопку
+  chatBoxBtn.focus();
+}
+
+// Мягко скрыть и очистить ответ
+function clearAnswer() {
+  if (!answerCard) return;
+  if (!answerCard.classList.contains('hidden')) {
+    answerCard.classList.add('fade-out');
+    setTimeout(() => {
+      answerCard.classList.add('hidden');
+      answerCard.classList.remove('fade-out');
+      answerCard.innerHTML = '';
+    }, 250);
+  } else {
+    answerCard.innerHTML = '';
+  }
+  setStatus('');
+}
+
+// Вернуть персонажа и ввод в исходный вид (внутри chatStage)
+function showCharacter() {
+  if (!charStage) return;
+
+  // Вернём картинку персонажа на место
+  charStage.innerHTML = `
+    <img id="charAppear" src="/static/assets/msks_appear1.svg" alt="Появление персонажа"
+         class="mx-auto w-full max-w-xs md:max-w-sm lg:max-w-md h-auto select-none" />
+  `;
+
+  // Подсказка и анимация
+  charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
+  swapChar('/static/assets/msks_appear1.svg');
+  playAnim('idle'); // на старте — idle
+
+  // Вернуть форму
+  askForm.classList.remove('hidden');
+  askForm.querySelector('button').disabled = false;
+  promptIn.value = '';
+  autosize(promptIn);
+  promptIn.focus();
+
+  // Прелоад кадров, если нужно переигрывать потом
+  preloadFrames(DONE_FRAMES);
+  preloadFrames([EMPTY_FRAME]);
+}
+
+// Полный рестарт цикла по клику встроенной коробки
+async function restartFlowFromBox() {
+  // отменить текущие последовательности/таймеры
+  currentSeq.canceled = true;
+  playAnim('idle');
+
+  // скрыть/очистить предыдущий ответ
+  clearAnswer();
+
+  // показать персонажа и поле ввода
+  showCharacter();
+}
+
 
 // ====== Flow ======
 boxBtn.addEventListener('click', () => {
@@ -277,9 +385,9 @@ askForm.addEventListener('submit', async (e) => {
     cancelToken: currentSeq
     });
 
-    // после последовательности - заглушка 
+    // после последовательности показываем встроенную коробку
     if (!currentSeq.canceled) {
-    swapChar(EMPTY_FRAME);
+      showInlineBox();
     }
     
     // подсветка кода
