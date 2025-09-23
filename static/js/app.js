@@ -171,12 +171,18 @@ function showInlineBox() {
   // верстаем кнопку-коробку прямо в место персонажа
   charStage.innerHTML = `
     <button id="chatBoxBtn"
-      class="w-full rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow py-4">
+      class="w-full rounded-3xl bg-white shadow grid place-items-center hover:shadow-lg transition-shadow py-4
+         focus:outline-none focus:ring-0 focus-visible:outline-none border-0">
       <img id="chatBoxImg" src="/static/assets/box1.svg" alt="Коробка"
            class="w-40 h-40 md:w-48 md:h-48 select-none pointer-events-none" />
       <div class="text-sm text-gray-500 mt-2">Нажми, чтобы вызвать мистера Мисикса снова</div>
     </button>
   `;
+
+  // перезапустить fade-in анимацию для контейнера
+  charStage.classList.remove('fade-in');
+  void charStage.offsetWidth;      // force reflow
+  charStage.classList.add('fade-in');
 
   // подсказка остаётся как есть; можно обновить при желании:
   // charHint.textContent = 'Нажми на коробку, чтобы начать заново';
@@ -237,6 +243,11 @@ function showCharacter() {
     <img id="charAppear" src="/static/assets/msks_appear1.svg" alt="Появление персонажа"
          class="mx-auto w-full max-w-xs md:max-w-sm lg:max-w-md h-auto select-none" />
   `;
+
+  // перезапустить fade-in анимацию для контейнера
+  charStage.classList.remove('fade-in');
+  void charStage.offsetWidth;      // force reflow
+  charStage.classList.add('fade-in');
 
   // Подсказка и анимация
   charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';

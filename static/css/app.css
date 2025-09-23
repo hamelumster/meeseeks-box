@@ -45,3 +45,10 @@
 #chatBoxImg { transition: transform .1s ease; }
 #chatBoxBtn[aria-pressed="true"] #chatBoxImg { transform: scale(0.98); }
 
+/* встроенная коробка в чате */
+#chatBoxBtn { cursor: pointer; outline: none; border: 0; }
+#chatBoxBtn:focus,
+#chatBoxBtn:focus-visible { outline: none; box-shadow: none; }
+#chatBoxBtn::-moz-focus-inner { border: 0; }
+#chatBoxImg { transition: transform .1s ease; }
+#chatBoxBtn[aria-pressed="true"] #chatBoxImg { transform: scale(0.98); }
