@@ -1,30 +1,3 @@
-const charContainer = document.getElementById('charLottie');
-let charAnimIdle, charAnimThink, currentAnim = null;
-
-function loadCharAnims() {
-  charAnimIdle = lottie.loadAnimation({
-    container: charContainer,
-    renderer: 'svg',
-    loop: true,
-    autoplay: false,
-    path: '/static/assets/character_idle.json'
-  });
-  charAnimThink = lottie.loadAnimation({
-    container: charContainer,
-    renderer: 'svg',
-    loop: true,
-    autoplay: false,
-    path: '/static/assets/character_think.json'
-  });
-  playAnim('idle');
-}
-
-function playAnim(mode) {
-  [charAnimIdle, charAnimThink].forEach(a => a && a.stop());
-  if (mode === 'think' && charAnimThink) { charAnimThink.play(); currentAnim = 'think'; return; }
-  if (charAnimIdle) { charAnimIdle.play(); currentAnim = 'idle'; }
-}
-
 // ====== DOM refs ======
 const boxBtn = document.getElementById('boxBtn');
 const boxImg = document.getElementById('boxImg');
@@ -274,7 +247,6 @@ async function showCharacter() {
   // Подсказка и анимация
   charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
   swapChar('/static/assets/msks_appear1.svg');
-  playAnim('idle'); // на старте — idle
 
   // Готовим форму, но пока не показываем мгновенно
   askForm.classList.add('hidden');
@@ -304,7 +276,6 @@ async function showCharacter() {
 async function restartFlowFromBox() {
   // отменить текущие последовательности/таймеры
   currentSeq.canceled = true;
-  playAnim('idle');
 
   // скрыть/очистить предыдущий ответ
   clearAnswer();
@@ -353,9 +324,6 @@ boxBtn.addEventListener('click', () => {
         chatStage.classList.remove('hidden');
         chatStage.classList.add('fade-in');
 
-        // анимации персонажа
-        loadCharAnims();
-
         // прелоад финальных кадров
         preloadFrames(DONE_FRAMES);
         preloadFrames([EMPTY_FRAME]);
@@ -389,7 +357,6 @@ askForm.addEventListener('submit', async (e) => {
   answerCard.innerHTML = '';
   charHint.textContent = 'Ооооо, сейчас я тебе отвечу!';
   await swapChar('/static/assets/msks_think.svg');
-  playAnim('think');
   askForm.querySelector('button').disabled = true;
 
   try {
@@ -456,7 +423,6 @@ askForm.addEventListener('submit', async (e) => {
     );
     charHint.textContent = 'Упс… попробуем ещё?';
   } finally {
-    playAnim('idle');
     askForm.querySelector('button').disabled = false;
   }
 });
