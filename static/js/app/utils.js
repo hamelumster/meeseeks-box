@@ -31,7 +31,7 @@ export function addCopyButtons(root) {
 
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = 'Копировать';
+    btn.textContent = 'Copy';
     btn.className =
       'absolute top-2 right-2 text-xs rounded-md bg-gray-800/80 text-white px-2 py-1 ' +
       'opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800';
