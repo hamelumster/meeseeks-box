@@ -55,8 +55,7 @@ async function playFrameSequence(frames, { fps = 8, holdLast = true, cancelToken
   // пока держим последний кадр
 }
 
-// Плавная смена картинки: сперва плавно прячем, затем меняем src и плавно показываем.
-// Для flipbook/быстрой подмены используем опцию { instant: true }.
+// Плавная смена картинки
 function waitTransitionEnd(el, prop = 'opacity', timeout = 200) {
   return new Promise(resolve => {
     let done = false;
@@ -102,7 +101,6 @@ async function swapChar(src, { instant = false } = {}) {
   imgHost.src = src;
   requestAnimationFrame(() => { imgHost.style.opacity = 1; });
 }
-
 
 // авто-высота textarea
 function autosize(el) {
