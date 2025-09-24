@@ -9,15 +9,15 @@
 #answerCard.prose pre {
   background: #f6f8fa;            /* светло-серый (как у GitHub) */
   color: #1f2937;                  /* тёмно-серый текст */
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
   overflow-x: auto;
   border: 1px solid #e5e7eb;       /* тонкая рамка для контраста */
 }
 #answerCard.prose pre code {
   background: transparent;         /* не дублируем фон внутри */
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.90rem;
+  line-height: 1.55;
 }
 
 /* Инлайновые `code` — лёгкий чип на светлом фоне */
