@@ -30,6 +30,11 @@
   border: 1px solid #e5e7eb;
 }
 
+#answerCard.prose :not(pre) > code::before,
+#answerCard.prose :not(pre) > code::after {
+  content: none !important;
+}
+
 /* Подсветка hljs не должна возвращать тёмный фон */
 #answerCard .hljs {
   background: transparent !important;
