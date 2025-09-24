@@ -16,8 +16,8 @@
 }
 #answerCard.prose pre code {
   background: transparent;         /* не дублируем фон внутри */
-  font-size: 0.90rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* Инлайновые `code` — лёгкий чип на светлом фоне */
