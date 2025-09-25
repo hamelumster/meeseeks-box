@@ -1,7 +1,7 @@
 from flask import Flask, Response, jsonify, request, stream_with_context, send_from_directory
 import requests
 
-from config import SYSTEM_PROMPT
+from config import SYSTEM_PROMPT, TEMPERATURE, MAX_TOKENS, STREAM
 from lm_client import detect_first_responsive_model
 from utils import _clean_content_from_response, LM_BASE
 
@@ -63,23 +63,19 @@ def api_ask():
                 "message": "Не найдено ни одной модели, которая отвечает. Запустите LM Studio Server и загрузите модель."
             }), 503
 
-    stream = bool(body.get("stream", False))
-    temperature = body.get("temperature", 0.7)
-    max_tokens = body.get("max_tokens", 2048)
-
     payload = {
         "model": model,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
         ],
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "stream": stream,
+        "temperature": TEMPERATURE,
+        "max_tokens": MAX_TOKENS,
+        "stream": STREAM,
     }
 
     headers = {"Content-Type": "application/json"}
-    if stream:
+    if STREAM:
         headers["Accept"] = "text/event-stream"
 
     try:
@@ -87,7 +83,7 @@ def api_ask():
             f"{LM_BASE}/chat/completions",
             json=payload,
             headers=headers,
-            stream=stream,
+            stream=STREAM,
             timeout=(5, 300),
         )
     except requests.exceptions.ConnectTimeout:
@@ -99,7 +95,7 @@ def api_ask():
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "upstream_error", "message": str(e)}), 502
 
-    if not stream:
+    if not STREAM:
         try:
             obj = upstream.json()
             cleaned = _clean_content_from_response(obj)
