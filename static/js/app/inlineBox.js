@@ -2,6 +2,7 @@
 import { $, sleep, preloadFrames, setStatus, addCopyButtons } from './utils.js';
 import { DONE_FRAMES, FADE_MS } from './config.js';
 import { showCharacter, playFrameSequence, swapChar, cancelCurrentSeq } from './character.js';
+import { applyTranslations } from '../i18n.js';
 
 // Показ встроенной коробки в месте персонажа
 export function showInlineBox() {
@@ -14,13 +15,15 @@ export function showInlineBox() {
              focus:outline-none focus:ring-0 focus-visible:outline-none border-0">
       <img id="chatBoxImg" src="/static/assets/box1.svg" alt="Коробка"
            class="w-40 h-40 md:w-48 md:h-48 select-none pointer-events-none" />
-      <div class="text-sm text-gray-500 mt-2">Нажми на кнопку, чтобы вызвать мистера Мисикса снова</div>
+      <div class="text-sm text-gray-500 mt-2" data-i18n-key="ui.inline_hint"></div>
     </button>
   `;
   // легкий вход блока
   charStage.classList.remove('fade-in');
   void charStage.offsetWidth;
   charStage.classList.add('fade-in');
+
+  applyTranslations(charStage);
 
   const chatBoxBtn = $('chatBoxBtn');
   const chatBoxImg = $('chatBoxImg');
