@@ -3,6 +3,7 @@ import { $, sleep, autosize, setStatus, addCopyButtons, preloadFrames } from './
 import { DONE_FRAMES, FADE_MS } from './config.js';
 import { swapChar, showCharacter } from './character.js';
 import { showInlineBox, finishAndOfferBox } from './inlineBox.js';
+import { initI18n, setLocale, getLocale, t, applyTranslations } from '/static/js/i18n.js';
 
 //
 // DOM refs получаем на лету через $
@@ -17,6 +18,20 @@ const boxClickHandler = () => {
   const askForm = $('askForm');
   const promptIn = $('promptInput');
   const charHint = $('charHint');
+
+  if (charHint) charHint.textContent = t('char.hint_idle');
+
+  function showThinking() {
+  const hint = document.getElementById('charHint');
+  hint.textContent = t('char.hint_thinking');
+  }
+
+  function showReady(){
+  document.getElementById('status').textContent = t('status.ready');
+  document.getElementById('charHint').textContent = t('char.hint_idle');
+  }
+
+  // document.getElementById('charHint').textContent = t('char.hint_idle');
 
   if (!boxBtn) return;
 
@@ -57,7 +72,7 @@ const boxClickHandler = () => {
 
         // приветствие
         await swapChar('/static/assets/msks_appear1.svg');
-        if (charHint) charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
+        if (charHint) charHint.textContent = t('char.hint_idle');
 
         // форма
         if (askForm && promptIn) {
@@ -118,7 +133,7 @@ function setupSubmit() {
 
     answerCard.classList.add('hidden');
     answerCard.innerHTML = '';
-    if (charHint) charHint.textContent = 'Ооооо, сейчас я тебе отвечу!';
+    if (charHint) charHint.textContent = t('char.hint_thinking');
     await swapChar('/static/assets/msks_think.svg');
     askForm.querySelector('button').disabled = true;
 
@@ -139,12 +154,12 @@ function setupSubmit() {
       answerCard.classList.remove('hidden');
       answerCard.classList.add('fade-in');
       setStatus('');
-      if (charHint) charHint.textContent = 'Готово!';
+      if (charHint) charHint.textContent = t('status.ready');
       await swapChar('/static/assets/msks_done.svg');
 
       setTimeout(() => {
         if (!chatStage?.classList.contains('hidden') && charHint) {
-          charHint.textContent = 'Мистер Мисикс исчезает после того, как выполняет просьбу...';
+          charHint.textContent = t('char.hint_disappear');
         }
       }, 2000);
 
@@ -169,11 +184,11 @@ function setupSubmit() {
     } catch (err) {
       setStatus(
         err.message?.includes('no_responsive_model')
-          ? 'Не удалось подключиться к модели. Открой LM Studio → Server → Start Server и загрузите модель.'
-          : `Ошибка: ${err.message || 'неизвестная'}`,
+          ? t('error.no_model')
+          : `${t('error.prefix')} ${err.message || t('error.unknown')}`,
         'error'
       );
-      if (charHint) charHint.textContent = 'Упс… попробуем ещё?';
+      if (charHint) charHint.textContent = t('char.hint_retry');
     } finally {
       askForm.querySelector('button').disabled = false;
     }
@@ -181,9 +196,25 @@ function setupSubmit() {
 }
 
 function init() {
+  initI18n();
+  applyTranslations();
   setupBoxButton();
   setupAutosize();
   setupSubmit();
+
+  const btnEn = document.getElementById('langEn');
+  const btnRu = document.getElementById('langRu');
+
+  function syncLangButtons() {
+  const loc = getLocale();
+  btnEn?.classList.toggle('is-active', loc === 'en');
+  btnRu?.classList.toggle('is-active', loc === 'ru');
+  }
+  syncLangButtons();
+
+  btnEn?.addEventListener('click', () => { setLocale('en'); syncLangButtons(); });
+  btnRu?.addEventListener('click', () => { setLocale('ru'); syncLangButtons(); });
+
 }
 
 document.addEventListener('DOMContentLoaded', init);
