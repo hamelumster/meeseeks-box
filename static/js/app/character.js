@@ -1,5 +1,6 @@
 import { $, sleep, preloadFrames, waitTransitionEnd, autosize } from './utils.js';
 import { DONE_FRAMES, FLIPBOOK_FPS, FADE_MS, MICRO_DELAY_MS } from './config.js';
+import { t } from '../i18n.js';
 
 let currentSeq = { canceled: false }; // контроллер покадровой анимации
 
@@ -62,8 +63,7 @@ export async function showCharacter() {
   void charStage.offsetWidth;
   charStage.classList.add('fade-in');
 
-  // текст-подсказка
-  charHint.textContent = 'Я мистер Миииисиииикс! Посмотрите на меня!';
+  charHint.textContent = t('char.hint_idle');
 
   // Подготовить форму, скрыв её
   askForm.classList.add('hidden');
