@@ -72,3 +72,10 @@
 #chatBoxBtn::-moz-focus-inner { border: 0; }
 #chatBoxImg { transition: transform .1s ease; }
 #chatBoxBtn[aria-pressed="true"] #chatBoxImg { transform: scale(0.98); }
+
+#langSwitch button.is-active {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+  background: #fafbfc;
+  transition: box-shadow .15s ease, background .15s ease;
+}
