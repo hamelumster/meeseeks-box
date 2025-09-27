@@ -1,7 +1,7 @@
 // /static/js/app/main.js
 import { $, sleep, autosize, setStatus, addCopyButtons, preloadFrames } from './utils.js';
-import { DONE_FRAMES, FADE_MS } from './config.js';
-import { swapChar, showCharacter } from './character.js';
+import { DONE_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, REFLECT_FRAMES, REFLECT_FPS, FADE_MS } from './config.js';
+import { swapChar, showCharacter, playFrameSequence, playLoop } from './character.js';
 import { showInlineBox, finishAndOfferBox } from './inlineBox.js';
 import { initI18n, setLocale, getLocale, t, applyTranslations } from '/static/js/i18n.js';
 
@@ -120,8 +120,14 @@ function setupSubmit() {
     answerCard.classList.add('hidden');
     answerCard.innerHTML = '';
     if (charHint) charHint.textContent = t('char.hint_thinking');
-    await swapChar('/static/assets/msks_think.svg');
     askForm.querySelector('button').disabled = true;
+
+    // 1) accept anim
+    await playFrameSequence(ACCEPT_FRAMES, { fps: ACCEPT_FPS });
+
+    // 2) loop "thinking" anim
+    let reflectToken = { canceled: false };
+    playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: reflectToken });
 
     try {
       const resp = await fetch('/api/ask', {
@@ -141,6 +147,7 @@ function setupSubmit() {
       answerCard.classList.add('fade-in');
       setStatus('');
       if (charHint) charHint.textContent = t('status.ready');
+      reflectToken.canceled = true; 
       await swapChar('/static/assets/msks_done.svg');
 
       setTimeout(() => {
@@ -174,9 +181,11 @@ function setupSubmit() {
           : `${t('error.prefix')} ${err.message || t('error.unknown')}`,
         'error'
       );
+      reflectToken.canceled = true;
       if (charHint) charHint.textContent = t('char.hint_retry');
     } finally {
       askForm.querySelector('button').disabled = false;
+      reflectToken = null;
     }
   });
 }
@@ -204,3 +213,5 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+preloadFrames(ACCEPT_FRAMES);
+preloadFrames(REFLECT_FRAMES);
