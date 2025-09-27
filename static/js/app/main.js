@@ -1,6 +1,6 @@
 // /static/js/app/main.js
 import { $, sleep, autosize, setStatus, addCopyButtons, preloadFrames } from './utils.js';
-import { DONE_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, REFLECT_FRAMES, REFLECT_FPS, FADE_MS } from './config.js';
+import { DONE_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, ACCEPT_HOLD_MS, REFLECT_FRAMES, REFLECT_FPS, FADE_MS } from './config.js';
 import { swapChar, showCharacter, playFrameSequence, playLoop } from './character.js';
 import { showInlineBox, finishAndOfferBox } from './inlineBox.js';
 import { initI18n, setLocale, getLocale, t, applyTranslations } from '/static/js/i18n.js';
@@ -123,7 +123,10 @@ function setupSubmit() {
     askForm.querySelector('button').disabled = true;
 
     // 1) accept anim
-    await playFrameSequence(ACCEPT_FRAMES, { fps: ACCEPT_FPS });
+    await playFrameSequence(ACCEPT_FRAMES, { 
+      fps: ACCEPT_FPS, 
+      holdLastMs: ACCEPT_HOLD_MS,
+    });
 
     // 2) loop "thinking" anim
     let reflectToken = { canceled: false };
