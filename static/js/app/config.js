@@ -44,3 +44,5 @@ export const FLIPBOOK_FPS = 16;
 // Длительности анимаций UI
 export const FADE_MS = 250;
 export const MICRO_DELAY_MS = 90;
+
+export const ACCEPT_HOLD_MS = 180;
