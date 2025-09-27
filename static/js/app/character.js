@@ -1,5 +1,5 @@
 import { $, sleep, preloadFrames, waitTransitionEnd, autosize } from './utils.js';
-import { DONE_FRAMES, APPEAR_FRAMES, FLIPBOOK_FPS, FADE_MS, MICRO_DELAY_MS } from './config.js';
+import { DONE_FRAMES, APPEAR_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, REFLECT_FRAMES, REFLECT_FPS, FLIPBOOK_FPS, FADE_MS, MICRO_DELAY_MS } from './config.js';
 import { t } from '../i18n.js';
 
 let currentSeq = { canceled: false }; // контроллер покадровой анимации
@@ -41,6 +41,19 @@ export async function playFrameSequence(frames, { fps = FLIPBOOK_FPS, cancelToke
     if (cancelToken?.canceled) return;
     await swapChar(frames[i], { instant: true });
     await sleep(interval);
+  }
+}
+
+export async function playLoop(frames, { fps = REFLECT_FPS, cancelToken } = {}) {
+  if (!frames || !frames.length) return;
+  const interval = Math.max(30, Math.floor(1000 / fps));
+  await preloadFrames(frames);
+  while (!cancelToken?.canceled) {
+    for (let i = 0; i < frames.length; i++) {
+      if (cancelToken?.canceled) return;
+      await swapChar(frames[i], { instant: true });
+      await sleep(interval);
+    }
   }
 }
 
