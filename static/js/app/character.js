@@ -84,6 +84,7 @@ export async function showCharacter() {
   charStage.classList.add('fade-in');
 
   charHint.textContent = t('char.hint_idle');
+  charHint.setAttribute('data-hint-key', 'char.hint_idle');
 
   // Подготовить форму, скрыв её
   askForm.classList.add('hidden');
