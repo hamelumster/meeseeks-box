@@ -5,9 +5,12 @@ import { swapChar, showCharacter, playFrameSequence, playLoop } from './characte
 import { showInlineBox, finishAndOfferBox } from './inlineBox.js';
 import { initI18n, setLocale, getLocale, t, applyTranslations } from '/static/js/i18n.js';
 
-//
-// DOM refs получаем на лету через $
-//
+function setHint(key) {
+  const el = document.getElementById('charHint');
+  if (!el) return;
+  el.setAttribute('data-hint-key', key);
+  el.textContent = t(key);
+}
 
 const boxClickHandler = () => {
   const boxBtn = $('boxBtn');
@@ -19,7 +22,7 @@ const boxClickHandler = () => {
   const promptIn = $('promptInput');
   const charHint = $('charHint');
 
-  if (charHint) charHint.textContent = t('char.hint_idle');
+  setHint('char.hint_idle');
 
   function showThinking() {
   const hint = document.getElementById('charHint');
@@ -119,7 +122,7 @@ function setupSubmit() {
 
     answerCard.classList.add('hidden');
     answerCard.innerHTML = '';
-    if (charHint) charHint.textContent = t('char.hint_thinking');
+    setHint('char.hint_thinking');
     askForm.querySelector('button').disabled = true;
 
     // 1) accept anim
@@ -149,13 +152,13 @@ function setupSubmit() {
       answerCard.classList.remove('hidden');
       answerCard.classList.add('fade-in');
       setStatus('');
-      if (charHint) charHint.textContent = t('status.ready');
+      setHint('status.ready');
       reflectToken.canceled = true; 
       await swapChar('/static/assets/msks_done.svg');
 
       setTimeout(() => {
         if (!chatStage?.classList.contains('hidden') && charHint) {
-          charHint.textContent = t('char.hint_disappear');
+          setHint('char.hint_disappear');
         }
       }, 2000);
 
@@ -185,7 +188,7 @@ function setupSubmit() {
         'error'
       );
       reflectToken.canceled = true;
-      if (charHint) charHint.textContent = t('char.hint_retry');
+      setHint('char.hint_retry');
     } finally {
       askForm.querySelector('button').disabled = false;
       reflectToken = null;
@@ -212,6 +215,20 @@ function init() {
 
   btnEn?.addEventListener('click', () => { setLocale('en'); syncLangButtons(); });
   btnRu?.addEventListener('click', () => { setLocale('ru'); syncLangButtons(); });
+
+  btnEn?.addEventListener('click', () => {
+    setLocale('en');
+    syncLangButtons();
+    const cur = document.getElementById('charHint')?.getAttribute('data-hint-key');
+    if (cur) setHint(cur);
+  });
+
+  btnRu?.addEventListener('click', () => {
+    setLocale('ru');
+    syncLangButtons();
+    const cur = document.getElementById('charHint')?.getAttribute('data-hint-key');
+    if (cur) setHint(cur);
+  });
 
 }
 
