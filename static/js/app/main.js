@@ -67,21 +67,7 @@ const boxClickHandler = () => {
           chatStage.classList.add('fade-in');
         }
 
-        // прелоад кадров
-        preloadFrames(DONE_FRAMES);
-
-        // приветствие
-        await swapChar('/static/assets/msks_appear1.svg');
-        if (charHint) charHint.textContent = t('char.hint_idle');
-
-        // форма
-        if (askForm && promptIn) {
-          promptIn.value = '';
-          askForm.classList.remove('hidden', 'fade-out');
-          askForm.querySelector('button').disabled = false;
-          autosize(promptIn);
-          promptIn.focus();
-        }
+        await showCharacter();
 
         boxBtn.removeAttribute('aria-pressed');
         boxBtn.disabled = false;
