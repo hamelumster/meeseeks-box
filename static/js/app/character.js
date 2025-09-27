@@ -1,5 +1,5 @@
 import { $, sleep, preloadFrames, waitTransitionEnd, autosize } from './utils.js';
-import { DONE_FRAMES, FLIPBOOK_FPS, FADE_MS, MICRO_DELAY_MS } from './config.js';
+import { DONE_FRAMES, APPEAR_FRAMES, FLIPBOOK_FPS, FADE_MS, MICRO_DELAY_MS } from './config.js';
 import { t } from '../i18n.js';
 
 let currentSeq = { canceled: false }; // контроллер покадровой анимации
@@ -55,7 +55,7 @@ export async function showCharacter() {
 
   // Вставляем <img id="charAppear"> заново
   charStage.innerHTML = `
-    <img id="charAppear" src="/static/assets/msks_appear1.svg" alt="Появление персонажа"
+    <img id="charAppear" src="${APPEAR_FRAMES[0]}" alt="Появление персонажа"
          class="mx-auto w-full max-w-xs md:max-w-sm lg:max-w-md h-auto select-none" />
   `;
   // перезапуск анимации контейнера
@@ -72,8 +72,12 @@ export async function showCharacter() {
   promptIn.value = '';
   autosize(promptIn);
 
-  // Сначала мягко показать персонажа
-  await swapChar('/static/assets/msks_appear1.svg');
+  const seq = cancelCurrentSeq();
+  await playFrameSequence(
+    APPEAR_FRAMES, 
+    { cancelToken: seq ,
+    fps: FLIPBOOK_FPS,
+  });
 
   // Затем плавно показать форму с микро-задержкой
   setTimeout(() => {
