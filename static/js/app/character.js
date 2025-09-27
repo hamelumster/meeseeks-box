@@ -33,7 +33,10 @@ export async function swapChar(src, { instant = false } = {}) {
 }
 
 // Покадровая последовательность (без плавности между кадрами)
-export async function playFrameSequence(frames, { fps = FLIPBOOK_FPS, cancelToken } = {}) {
+export async function playFrameSequence(
+  frames,
+  { fps = FLIPBOOK_FPS, cancelToken, holdLastMs = 0 } = {}
+) {
   if (!frames || !frames.length) return;
   const interval = Math.max(30, Math.floor(1000 / fps));
   await preloadFrames(frames);
@@ -41,6 +44,10 @@ export async function playFrameSequence(frames, { fps = FLIPBOOK_FPS, cancelToke
     if (cancelToken?.canceled) return;
     await swapChar(frames[i], { instant: true });
     await sleep(interval);
+  }
+  // pause in last frame
+  if (!cancelToken?.canceled && holdLastMs > 0) {
+    await sleep(holdLastMs);
   }
 }
 
