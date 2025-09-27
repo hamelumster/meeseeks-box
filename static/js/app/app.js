@@ -13,15 +13,15 @@ const charStage = document.getElementById('charStage');
 
 // ==== КАДРЫ ПОСЛЕ "ГОТОВО" ====
 const DONE_FRAMES = [
-  '/static/assets/Frame_4.svg',
-  '/static/assets/Frame_5.svg',
-  '/static/assets/Frame_6.svg',
-  '/static/assets/Frame_7.svg',
-  '/static/assets/Frame_8.svg',
-  '/static/assets/Frame_9.svg',
+  '/static/assets/vanish/vanish_1.svg',
+  '/static/assets/vanish/vanish_2.svg',
+  '/static/assets/vanish/vanish_3.svg',
+  '/static/assets/vanish/vanish_4.svg',
+  '/static/assets/vanish/vanish_5.svg',
+  '/static/assets/vanish/vanish_6.svg',
 ];
 
-const EMPTY_FRAME = '/static/assets/Frame_10.svg';
+const EMPTY_FRAME = '/static/assets/vanish/vanish_7.svg';
 
 // утилиты
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
