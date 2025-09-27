@@ -17,6 +17,27 @@ export const APPEAR_FRAMES = [
   '/static/assets/msks_appear1.svg', 
 ];
 
+export const ACCEPT_FRAMES = [
+  '/static/assets/msks_think.svg',
+  '/static/assets/msks_think2.svg',
+  '/static/assets/msks_think3.svg',
+];
+export const ACCEPT_FPS = 2; // speed for ACCEPT_FRAMES
+
+export const REFLECT_FRAMES = [
+  '/static/assets/msks_reflect1.svg',
+  '/static/assets/msks_reflect2.svg',
+  '/static/assets/msks_reflect3.svg',
+  '/static/assets/msks_reflect4.svg',
+  '/static/assets/msks_reflect5.svg',
+  '/static/assets/msks_reflect6.svg',
+  '/static/assets/msks_reflect7.svg',
+  '/static/assets/msks_reflect8.svg',
+  '/static/assets/msks_reflect9.svg',
+  '/static/assets/msks_reflect10.svg',
+];
+export const REFLECT_FPS = 4; 
+
 // Управление скоростью покадровой анимации
 export const FLIPBOOK_FPS = 16;
 
