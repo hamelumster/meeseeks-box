@@ -3,7 +3,8 @@ const DICTS = {
   en: {
     'ui.intro_hint': 'Press the button to summon Mr. Meeseeks!',
     'char.hint_idle': "I'm Mr. Meeseeks! Look at me!",
-    'char.hint_thinking': "Thinking… I'll answer in a sec!",
+    'char.hint_thinking': "Ooooh, I can do that!",
+    'char.hint_reflect': 'Mr. Meeseeks is thinking...',
     'char.hint_disappear': 'Mr. Meeseeks disappears after completing the request…',
     'char.hint_retry': 'Oops… shall we try again?',
     'ui.send': 'Send',
@@ -18,6 +19,7 @@ const DICTS = {
     'ui.intro_hint': 'Нажми на кнопку, чтобы появился мистер Мисикс!',
     'char.hint_idle': 'Я мистер Миииисиииикс! Посмотрите на меня!',
     'char.hint_thinking': 'Ооооо, сейчас я тебе отвечу!',
+    'char.hint_reflect': 'Мистер Мисикс думает...',
     'char.hint_disappear': 'Мистер Мисикс исчезает после того, как выполняет просьбу...',
     'char.hint_retry': 'Упс… попробуем ещё?',
     'ui.send': 'Отправить',
