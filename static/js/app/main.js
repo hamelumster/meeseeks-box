@@ -131,6 +131,8 @@ function setupSubmit() {
       holdLastMs: ACCEPT_HOLD_MS,
     });
 
+    setHint('char.hint_reflect'); 
+
     // 2) loop "thinking" anim
     let reflectToken = { canceled: false };
     playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: reflectToken });
