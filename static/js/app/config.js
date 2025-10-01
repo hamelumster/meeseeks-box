@@ -46,3 +46,5 @@ export const FADE_MS = 250;
 export const MICRO_DELAY_MS = 90;
 
 export const ACCEPT_HOLD_MS = 180;
+
+export const REFLECT_MIN_MS = 800;
