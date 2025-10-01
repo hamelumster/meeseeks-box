@@ -1,9 +1,11 @@
 // /static/js/app/main.js
 import { $, sleep, autosize, setStatus, addCopyButtons, preloadFrames } from './utils.js';
-import { DONE_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, ACCEPT_HOLD_MS, REFLECT_FRAMES, REFLECT_FPS, FADE_MS } from './config.js';
+import { DONE_FRAMES, ACCEPT_FRAMES, ACCEPT_FPS, ACCEPT_HOLD_MS, REFLECT_FRAMES, REFLECT_FPS, REFLECT_MIN_MS, FADE_MS } from './config.js';
 import { swapChar, showCharacter, playFrameSequence, playLoop } from './character.js';
 import { showInlineBox, finishAndOfferBox } from './inlineBox.js';
 import { initI18n, setLocale, getLocale, t, applyTranslations } from '/static/js/i18n.js';
+
+let activeReflectToken = null;
 
 function setHint(key) {
   const el = document.getElementById('charHint');
@@ -125,17 +127,27 @@ function setupSubmit() {
     setHint('char.hint_thinking');
     askForm.querySelector('button').disabled = true;
 
+    if (activeReflectToken && !activeReflectToken.canceled) {
+      activeReflectToken.canceled = true;
+    }
+
     // 1) accept anim
     await playFrameSequence(ACCEPT_FRAMES, { 
       fps: ACCEPT_FPS, 
       holdLastMs: ACCEPT_HOLD_MS,
-    });
+    }); 
 
-    setHint('char.hint_reflect'); 
+    const reflectStart = performance.now();
+    setHint('char.hint_reflect');
+
+    await preloadFrames(REFLECT_FRAMES);
+    await new Promise(r => requestAnimationFrame(r));
 
     // 2) loop "thinking" anim
-    let reflectToken = { canceled: false };
-    playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: reflectToken });
+    // let reflectToken = { canceled: false };
+    // playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: reflectToken });
+    activeReflectToken = { canceled: false };
+    playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: activeReflectToken });
 
     try {
       const resp = await fetch('/api/ask', {
@@ -149,13 +161,18 @@ function setupSubmit() {
       }
       const data = await resp.json(); // { content }
 
+      const elapsed = performance.now() - reflectStart;
+      if (elapsed < REFLECT_MIN_MS) {
+        await sleep(REFLECT_MIN_MS - elapsed);
+      }
+
       // показать ответ
       answerCard.innerHTML = (window.md ? window.md(data.content) : data.content);
       answerCard.classList.remove('hidden');
       answerCard.classList.add('fade-in');
       setStatus('');
       setHint('status.ready');
-      reflectToken.canceled = true; 
+      if (activeReflectToken) activeReflectToken.canceled = true;
       await swapChar('/static/assets/msks_done.svg');
 
       setTimeout(() => {
@@ -165,7 +182,6 @@ function setupSubmit() {
       }, 2000);
 
       await sleep(1600);
-
       await finishAndOfferBox(); // покадровая анимация + встроенная коробка
 
       // подсветка кода
@@ -189,11 +205,11 @@ function setupSubmit() {
           : `${t('error.prefix')} ${err.message || t('error.unknown')}`,
         'error'
       );
-      reflectToken.canceled = true;
+      if (activeReflectToken) activeReflectToken.canceled = true;
       setHint('char.hint_retry');
     } finally {
       askForm.querySelector('button').disabled = false;
-      reflectToken = null;
+      activeReflectToken = null;
     }
   });
 }
@@ -215,8 +231,8 @@ function init() {
   }
   syncLangButtons();
 
-  btnEn?.addEventListener('click', () => { setLocale('en'); syncLangButtons(); });
-  btnRu?.addEventListener('click', () => { setLocale('ru'); syncLangButtons(); });
+  // btnEn?.addEventListener('click', () => { setLocale('en'); syncLangButtons(); });
+  // btnRu?.addEventListener('click', () => { setLocale('ru'); syncLangButtons(); });
 
   btnEn?.addEventListener('click', () => {
     setLocale('en');
