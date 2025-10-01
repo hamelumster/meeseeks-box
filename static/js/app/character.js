@@ -13,9 +13,20 @@ export async function swapChar(src, { instant = false } = {}) {
   if (imgHost.src && imgHost.src.endsWith(src)) return;
 
   if (instant) {
-    imgHost.style.opacity = 1;
-    imgHost.src = src;
-    return;
+  const prevTransition = imgHost.style.transition;
+  imgHost.style.transition = 'none';
+  imgHost.style.opacity = 1;
+  imgHost.src = src;
+  await new Promise(r => requestAnimationFrame(r));
+
+  if (typeof imgHost.decode === 'function') {
+    try { await imgHost.decode(); } catch (_) { /* ignore */ }
+  }
+
+  void imgHost.offsetWidth;
+
+  imgHost.style.transition = prevTransition;
+  return;
   }
 
   imgHost.style.opacity = 0;
@@ -51,16 +62,24 @@ export async function playFrameSequence(
   }
 }
 
-export async function playLoop(frames, { fps = REFLECT_FPS, cancelToken } = {}) {
+export async function playLoop(
+  frames,
+  { fps = FLIPBOOK_FPS, cancelToken } = {}
+) {
   if (!frames || !frames.length) return;
-  const interval = Math.max(30, Math.floor(1000 / fps));
+
   await preloadFrames(frames);
+
+  const interval = Math.max(50, Math.floor(1000 / fps));
+
+  await swapChar(frames[0], { instant: true });
+  await new Promise(r => requestAnimationFrame(r));
+
+  let i = 1;
   while (!cancelToken?.canceled) {
-    for (let i = 0; i < frames.length; i++) {
-      if (cancelToken?.canceled) return;
-      await swapChar(frames[i], { instant: true });
-      await sleep(interval);
-    }
+    await swapChar(frames[i], { instant: true });
+    await sleep(interval);
+    i = (i + 1) % frames.length;
   }
 }
 
