@@ -1,0 +1,14 @@
+Flask==3.1.2
+requests==2.32.5
+waitress==3.0.2
+pywebview==4.4.1
+pythonnet==3.0.5
+clr_loader==0.2.7.post0
+pywin32-ctypes==0.2.3
+typing_extensions==4.15.0
+packaging==25.0
+colorama==0.4.6
+pyinstaller==6.16.0
+pyinstaller-hooks-contrib==2025.9
+pefile==2023.2.7
+altgraph==0.17.4
