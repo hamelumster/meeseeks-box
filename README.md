@@ -43,7 +43,7 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 
 <h3 align="center">
   <b>4. Download archive
-  <a href="https://github.com/hamelumster/meeseeks-box/raw/main/downloads/Meeseeks%20Box.zip">here</b></a>
+  <a href="https://github.com/hamelumster/meeseeks-box/blob/main/downloads/Meeseeks%20Box.zip">here</b></a>
 </h3>
 
 <h3 align="center"><b>5. Unpack .zip archive </b></h3>
