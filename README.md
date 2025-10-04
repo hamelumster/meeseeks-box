@@ -83,7 +83,7 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 
 > **What OS does the application run on?**
 >
-> **As of 10/04/25, the application is only available for Windows OS. In the next releases I will compile for other OS. If you have Python installed on your local machine, you can run the script and use the Meeseeks box in the browser (see this section)**\
+> **As of 10/04/25, the application is only available for Windows OS. In the next releases I will compile for other OS. If you have Python installed on your local machine, you can run the script and use the Meeseeks box in the browser ([see this](#launch-browser))**
 
 ---
 
@@ -105,7 +105,7 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 
 # 🖥️ Launch in a browser / app build (windows OS)
 
-## 1) Launch in a browser
+<h2 id="launch-browser">1) Launch in a browser</h2>
 
 0) clone repo ```git clone git@github.com:hamelumster/meeseeks-box.git``` or download all files from repo in 'your_folder/'
 1) create a virtual environment ```python -m venv venv```
