@@ -21,13 +21,9 @@
 ## ✨ Overview
 
 Meeseeks Box is a simple tool for getting one quick response from LLM (remember: Mr. Meeseeks disappears when he fulfills the request)
+[▶ How it works](https://hamelumster.github.io/meeseeks-box/) 
 
 ---
 
-<p align="center">
-  <video controls width="800">
-    <source src="docs/demonstration.mp4" type="video/mp4">
-    <a href="docs/demonstration.mp4">Смотреть видео</a>
-  </video>
-</p>
+
 
