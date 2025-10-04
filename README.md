@@ -130,6 +130,7 @@ if you're even reading this and you're interested in building this app yourself,
 # ⚠️Important notes
 - app works via active LM model, which you load in LM Studio
 - unfortunately, when you exit/disable LM Studio, Meeseeks box cannot be used
+- "Keep it simple brrrrp, they're not gods (c) Rick
  
 ---
 
