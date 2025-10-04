@@ -16,14 +16,15 @@
   <a href="#"><img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?logo=javascript&logoColor=000000" alt="JavaScript"></a>
 </p>
 
+<h1 align="center">
+  <a href="https://hamelumster.github.io/meeseeks-box/">▶ How it works 😮</a>
+</h1>
+
 ---
 
 ## ✨ Overview
 
 Meeseeks Box is a simple tool for getting one quick response from LLM (remember: Mr. Meeseeks disappears when he fulfills the request)
-[▶ How it works](https://hamelumster.github.io/meeseeks-box/) 
 
 ---
-
-
 
