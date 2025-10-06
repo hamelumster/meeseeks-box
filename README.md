@@ -64,7 +64,7 @@
 > - LM Studio<br>
 > - ~60 MB of free disk space<br>
 
-<h2 id="build-app"> 2) ⚡️Build app (higly recommend for full expirience) </h2>
+<h2 id="build-app"> 2) ⚡️Build app (highly recommend for full expirience) </h2>
 
 1) clone repo and create venv
 2) use command ```pip install -r requirements-build-win.txt```
