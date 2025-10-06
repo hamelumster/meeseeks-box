@@ -1,0 +1,81 @@
+/* анимации появления */
+.fade-in  { animation: fade-in  .25s ease forwards; }
+.fade-out { animation: fade-out .25s ease forwards; }
+@keyframes fade-in  { from{opacity:0; transform:scale(.97)} to{opacity:1; transform:scale(1)} }
+@keyframes fade-out { from{opacity:1; transform:scale(1)}  to{opacity:0; transform:scale(.97)} }
+
+/* Markdown-контент */
+/* Блочные <pre><code> — светлый фон, тёмный текст */
+#answerCard.prose pre {
+  background: #f6f8fa;            /* светло-серый (как у GitHub) */
+  color: #1f2937;                  /* тёмно-серый текст */
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;       /* тонкая рамка для контраста */
+}
+#answerCard.prose pre code {
+  background: transparent;         /* не дублируем фон внутри */
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Инлайновые `code` — лёгкий чип на светлом фоне */
+#answerCard.prose :not(pre) > code {
+  font-size: 0.95rem;
+  background: #f1f5f9;             /* чуть темнее, чем у pre */
+  color: #111827;
+  padding: .15rem .35rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+}
+
+#answerCard.prose :not(pre) > code::before,
+#answerCard.prose :not(pre) > code::after {
+  content: none !important;
+}
+
+/* Подсветка hljs не должна возвращать тёмный фон */
+#answerCard .hljs {
+  background: transparent !important;
+}
+
+/* Комментарии — мягче, но читаемо на светлом */
+#answerCard .hljs-comment,
+#answerCard .hljs-quote {
+  color: #6b7280 !important;       /* gray-500 */
+  font-style: italic;
+  opacity: 1;
+}
+
+#answerCard.prose ul { list-style: disc; padding-left: 1.25rem; }
+#answerCard.prose ol { list-style: decimal; padding-left: 1.25rem; }
+
+/* повысим контраст комментариев */
+#answerCard .hljs-comment,
+#answerCard .hljs-quote {
+  color: #9aa4b2 !important;
+  font-style: italic;
+  opacity: 1;
+}
+
+/* плавная смена изображений персонажа */
+#charAppear {
+  transition: opacity .25s ease;
+  will-change: opacity;
+}
+
+/* встроенная коробка в чате */
+#chatBoxBtn { cursor: pointer; outline: none; border: 0; }
+#chatBoxBtn:focus,
+#chatBoxBtn:focus-visible { outline: none; box-shadow: none; }
+#chatBoxBtn::-moz-focus-inner { border: 0; }
+#chatBoxImg { transition: transform .1s ease; }
+#chatBoxBtn[aria-pressed="true"] #chatBoxImg { transform: scale(0.98); }
+
+#langSwitch button.is-active {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+  background: #fafbfc;
+  transition: box-shadow .15s ease, background .15s ease;
+}
