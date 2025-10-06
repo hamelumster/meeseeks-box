@@ -143,9 +143,6 @@ function setupSubmit() {
     await preloadFrames(REFLECT_FRAMES);
     await new Promise(r => requestAnimationFrame(r));
 
-    // 2) loop "thinking" anim
-    // let reflectToken = { canceled: false };
-    // playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: reflectToken });
     activeReflectToken = { canceled: false };
     playLoop(REFLECT_FRAMES, { fps: REFLECT_FPS, cancelToken: activeReflectToken });
 
@@ -230,9 +227,6 @@ function init() {
   btnRu?.classList.toggle('is-active', loc === 'ru');
   }
   syncLangButtons();
-
-  // btnEn?.addEventListener('click', () => { setLocale('en'); syncLangButtons(); });
-  // btnRu?.addEventListener('click', () => { setLocale('ru'); syncLangButtons(); });
 
   btnEn?.addEventListener('click', () => {
     setLocale('en');
