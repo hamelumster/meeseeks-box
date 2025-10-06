@@ -52,7 +52,7 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 0) clone repo ```git clone git@github.com:hamelumster/meeseeks-box.git``` or download all files from repo in your folder ```folder_name```
 1) create a virtual environment ```python -m venv venv```
 2) activate venv: ```venv/Scripts/activate```
-3) use command ```pip install requirements-app.txt```
+3) use command ```pip install -r requirements-app.txt```
 4) run app with ```python app.py```
 5) go to http://127.0.0.1:5000
 
@@ -64,7 +64,7 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 <h2 id="build-app"> 2) ⚡️Build app (higly recommend for full expirience) </h2>
 
 1) clone repo and create venv
-2) use command ```pip install requirements-build-win.txt```
+2) use command ```pip install -r requirements-build-win.txt```
 3) for compile app you should use this command: ```python -m PyInstaller --noconfirm --name "Meeseeks Box" --windowed --icon=static\assets\box.ico --add-data "static;static" --clean --noupx desktop.py```
 5) after this you can see new files. you need directory ```dist```: in folder ```Meeseeks Box/``` there are two files: ```_internal``` and ```MeeeseksBox.exe``` (new directory ```build``` you can delete)
 6) launch ```MeeeseksBox.exe``` - this is your Meeseeks box! 👌
