@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT"></a>
+  <img src="https://img.shields.io/badge/version-v1.0.0-blue.svg" alt="Version">
   <a href="#"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white" alt="Python"></a>
   <a href="#"><img src="https://img.shields.io/badge/Flask-3.x-000000.svg?logo=flask&logoColor=white" alt="Flask"></a>
   <a href="#"><img src="https://img.shields.io/badge/pywebview-4.x-4B32C3.svg" alt="pywebview"></a>
