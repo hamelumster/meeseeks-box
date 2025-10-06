@@ -22,7 +22,7 @@
 </h1>
 
 <h3 align="center">🔍 What is it? </h3>
-Meeseeks Box is a simple tool for getting one quick response from LLM (remember: Mr. Meeseeks disappears when he fulfills the request)
+<p align="center"> Meeseeks Box is a simple tool for getting one quick response from LLM (remember: Mr. Meeseeks disappears when he fulfills the request) </p>
 
 <h2 align="center">🚀 Quick Start </h2>
 
@@ -45,6 +45,8 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 <h3 align="center"><b>4. See <a href="#build-app">how to build native app </a> or <a href="#launch-browser">launch in browser</a></b></h3>
 
 <h3 align="center"><b>5. Voila! </b></h3>
+
+---
 
 # 🖥️ Launch in a browser / app build (windows OS)
 
