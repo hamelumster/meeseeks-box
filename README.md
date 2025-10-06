@@ -121,9 +121,13 @@ Meeseeks Box is a simple tool for getting one quick response from LLM (remember:
 
 ## 3) build app yourself
 if you're even reading this and you're interested in building this app yourself, then you already know what to do 😄
+but I consider this method the most acceptable
 1) nonetheless, create venv and clone repo
 2) use command ```pip install requirements-build-win.txt```
 3) you can run ```python app.py``` for test in browser, you can also run ```python desktop.py```. for compile app you should use this command: ```python -m PyInstaller --noconfirm --name "Meeseeks Box" --windowed --icon=static\assets\box.ico --add-data "static;static" --clean --noupx desktop.py```
+4) you need directory ```dist```: there are two files: ```_internal``` and ```MeeeseksBox.exe``` (directory ```build``` you can delete)
+5) theese two files (```_internal``` and ```MeeeseksBox.exe```) you can put in your folder
+6) launch ```MeeeseksBox.exe``` 
 
 ---
 
