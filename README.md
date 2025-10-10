@@ -125,7 +125,6 @@
 > **And the next time I start my PC, will I need to reconnect the server in LM Studio?**
 >
 > **No, if you didn't stop it yourself, it will be on and the Meeseeks box will work correctly.**
-
 ---
 
 # ⚠️Important notes
@@ -133,6 +132,8 @@
 - unfortunately, when you exit/disable LM Studio, Meeseeks box cannot be used
 - "Keep it simple brrrrp, they're not gods" (c) Rick
 - heavy-duty models, such as "gpt-oss", take a long time to respond on a mid-range PC. since the project doesn't implement response streaming, you'll have to wait for a response
+
+- you can tune "system prompt" or "temperature" of LM in ```config.py``` inside the project. If you already have a system prompt installed inside LM Studio, you don't need to do this
  
 ---
 
