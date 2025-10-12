@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/assets/_source/box-1024.png" width="132" height="132" alt="Meeseeks Box Icon">
+  <img src="static/assets/icons/_source/box-1024.png" width="132" height="132" alt="Meeseeks Box Icon">
 </p>
 <h1 align="center">Meeseeks Box</h1>
 <h2 align="center">
