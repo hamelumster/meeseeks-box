@@ -68,7 +68,7 @@
 
 1) clone repo and create venv
 2) use command ```pip install -r requirements-build-win.txt```
-3) for compile app you should use this command: ```python -m PyInstaller --noconfirm --name "Meeseeks Box" --windowed --icon=static\assets\box.ico --add-data "static;static" --clean --noupx desktop.py```
+3) for compile app you should use this command: ```python -m PyInstaller --noconfirm --name "Meeseeks Box" --windowed --icon=static\assets\icons\windows\box.ico --add-data "static;static" --clean --noupx desktop.py```
 5) after this you can see new files. you need directory ```dist```: in folder ```Meeseeks Box/``` there are two files: ```_internal``` and ```MeeeseksBox.exe``` (new directory ```build``` you can delete)
 6) launch ```MeeeseksBox.exe``` - this is your Meeseeks box! 👌
 7) also you can right-click the ```MeeeseksBox.exe``` file and drag it to your desktop, then select "create shortcuts". this way you will always have a Meeseeks box on hand
